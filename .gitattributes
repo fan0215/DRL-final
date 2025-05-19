@@ -1,0 +1,11 @@
+environment/Library/SourceAssetDB filter=lfs diff=lfs merge=lfs -text
+environment/Library/PackageCache/com.unity.burst@59eb6f11d242/.Runtime/hostmac/dsymutil filter=lfs diff=lfs merge=lfs -text
+environment/Library/PackageCache/com.unity.burst@59eb6f11d242/.Runtime/burst-llvm-18-arm64.dll filter=lfs diff=lfs merge=lfs -text
+environment/Library/PackageCache/com.unity.burst@59eb6f11d242/.Runtime/burst-llvm-18.dll filter=lfs diff=lfs merge=lfs -text
+environment/Library/PackageCache/com.unity.burst@59eb6f11d242/.Runtime/burst-llvm-19-arm64.dll filter=lfs diff=lfs merge=lfs -text
+environment/Library/PackageCache/com.unity.burst@59eb6f11d242/.Runtime/burst-llvm-19.dll filter=lfs diff=lfs merge=lfs -text
+environment/Library/PackageCache/com.unity.burst@59eb6f11d242/.Runtime/libburst-llvm-10.dylib filter=lfs diff=lfs merge=lfs -text
+environment/Library/PackageCache/com.unity.burst@59eb6f11d242/.Runtime/libburst-llvm-18.dylib filter=lfs diff=lfs merge=lfs -text
+environment/Library/PackageCache/com.unity.burst@59eb6f11d242/.Runtime/libburst-llvm-19.dylib filter=lfs diff=lfs merge=lfs -text
+environment/Library/PackageCache/com.unity.burst@59eb6f11d242/.Runtime/libburst-llvm-18.so filter=lfs diff=lfs merge=lfs -text
+environment/Library/PackageCache/com.unity.burst@59eb6f11d242/.Runtime/libburst-llvm-19.so filter=lfs diff=lfs merge=lfs -text
