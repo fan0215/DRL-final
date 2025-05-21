@@ -116,7 +116,7 @@
 -define:ENABLE_TERRAIN
 -define:ENABLE_TILEMAP
 -define:ENABLE_TIMELINE
--define:ENABLE_INPUT_SYSTEM
+-define:ENABLE_LEGACY_INPUT_MANAGER
 -define:TEXTCORE_FONT_ENGINE_1_5_OR_NEWER
 -define:TEXTCORE_TEXT_ENGINE_1_5_OR_NEWER
 -define:CSHARP_7_OR_LATER
@@ -378,6 +378,9 @@
 -r:"Library/PackageCache/com.unity.collections@56bff8827a7e/Unity.Collections.LowLevel.ILSupport/Unity.Collections.LowLevel.ILSupport.dll"
 -r:"Library/PackageCache/com.unity.ext.nunit@b16e6d09cd93/net40/unity-custom/nunit.framework.dll"
 -r:"Library/PackageCache/com.unity.ext.nunit@b16e6d09cd93/net40/unity-custom/nunit.framework.dll"
+-r:"Library/PackageCache/com.unity.ml-agents@2b4ded88494d/Plugins/ProtoBuffer/Grpc.Core.dll"
+-r:"Library/PackageCache/com.unity.ml-agents@2b4ded88494d/Plugins/System.IO.Abstractions.TestingHelpers.dll"
+-r:"Library/PackageCache/com.unity.ml-agents@2b4ded88494d/Plugins/System.IO.Abstractions.dll"
 -r:"Library/PackageCache/com.unity.nuget.mono-cecil@d6f9955a5d5f/Mono.Cecil.dll"
 -r:"Library/PackageCache/com.unity.visualscripting@7dcdc439b230/Editor/VisualScripting.Core/Dependencies/DotNetZip/Unity.VisualScripting.IonicZip.dll"
 -r:"Library/PackageCache/com.unity.visualscripting@7dcdc439b230/Editor/VisualScripting.Core/Dependencies/YamlDotNet/Unity.VisualScripting.YamlDotNet.dll"
@@ -395,6 +398,9 @@
 -r:"Library/Bee/artifacts/2400b0aE.dag/Unity.Collections.ref.dll"
 -r:"Library/Bee/artifacts/2400b0aE.dag/Unity.InputSystem.ForUI.ref.dll"
 -r:"Library/Bee/artifacts/2400b0aE.dag/Unity.InputSystem.ref.dll"
+-r:"Library/Bee/artifacts/2400b0aE.dag/Unity.ML-Agents.CommunicatorObjects.ref.dll"
+-r:"Library/Bee/artifacts/2400b0aE.dag/Unity.ML-Agents.Editor.ref.dll"
+-r:"Library/Bee/artifacts/2400b0aE.dag/Unity.ML-Agents.ref.dll"
 -r:"Library/Bee/artifacts/2400b0aE.dag/Unity.Mathematics.Editor.ref.dll"
 -r:"Library/Bee/artifacts/2400b0aE.dag/Unity.Mathematics.ref.dll"
 -r:"Library/Bee/artifacts/2400b0aE.dag/Unity.Multiplayer.Center.Common.ref.dll"
@@ -421,6 +427,11 @@
 -r:"Library/Bee/artifacts/2400b0aE.dag/Unity.Rendering.LightTransport.Runtime.ref.dll"
 -r:"Library/Bee/artifacts/2400b0aE.dag/Unity.Rider.Editor.ref.dll"
 -r:"Library/Bee/artifacts/2400b0aE.dag/Unity.Searcher.Editor.ref.dll"
+-r:"Library/Bee/artifacts/2400b0aE.dag/Unity.Sentis.Editor.ref.dll"
+-r:"Library/Bee/artifacts/2400b0aE.dag/Unity.Sentis.MacBLAS.ref.dll"
+-r:"Library/Bee/artifacts/2400b0aE.dag/Unity.Sentis.ONNX.ref.dll"
+-r:"Library/Bee/artifacts/2400b0aE.dag/Unity.Sentis.iOSBLAS.ref.dll"
+-r:"Library/Bee/artifacts/2400b0aE.dag/Unity.Sentis.ref.dll"
 -r:"Library/Bee/artifacts/2400b0aE.dag/Unity.Settings.Editor.ref.dll"
 -r:"Library/Bee/artifacts/2400b0aE.dag/Unity.ShaderGraph.Editor.ref.dll"
 -r:"Library/Bee/artifacts/2400b0aE.dag/Unity.TextMeshPro.Editor.ref.dll"

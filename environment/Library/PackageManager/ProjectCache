@@ -5,16 +5,16 @@ m_ProjectFiles:
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638832625610000000
-    m_Hash: 2144669176
+      ticks: 638834431080000000
+    m_Hash: 357168264
   m_LockFileStatus:
     m_FilePath: /home/jason/code/drl/final/DRL-final/environment/Packages/packages-lock.json
     m_PathExists: 1
     m_ContentTrackingEnabled: 1
     m_ModificationDate:
       serializedVersion: 2
-      ticks: 638832625610000000
-    m_Hash: 487634884
+      ticks: 638834431080000000
+    m_Hash: 2917036111
 m_EmbeddedPackageManifests:
   m_ManifestsStatus: {}
 m_LocalPackages:
@@ -671,6 +671,158 @@ m_ResolvedPackages:
     compatibilityLevel: 0
     minimumPackageVersion: 1.14.0
     minimumUnityVersion: 2021.3.0a1
+- packageId: com.unity.ml-agents@3.0.0
+  testable: 0
+  isDirectDependency: 1
+  version: 3.0.0
+  source: 1
+  resolvedPath: /home/jason/code/drl/final/DRL-final/environment/Library/PackageCache/com.unity.ml-agents@2b4ded88494d
+  assetPath: Packages/com.unity.ml-agents
+  name: com.unity.ml-agents
+  displayName: ML Agents
+  author:
+    name: 
+    email: 
+    url: 
+  category: 
+  type: 
+  description: Use state-of-the-art machine learning to create intelligent character
+    behaviors in any Unity environment (games, robotics, film, etc.).
+  errors: []
+  versions:
+    all:
+    - 0.16.0-preview
+    - 1.0.0-preview
+    - 1.0.1-preview
+    - 1.0.2-preview
+    - 1.0.2
+    - 1.0.3
+    - 1.0.4
+    - 1.0.5
+    - 1.0.6
+    - 1.0.7
+    - 1.0.8
+    - 1.1.0-preview
+    - 1.2.0-preview
+    - 1.3.0-preview
+    - 1.4.0-preview
+    - 1.5.0-preview
+    - 1.6.0-preview
+    - 1.7.0-preview
+    - 1.7.2-preview
+    - 1.8.0-preview
+    - 1.8.1-preview
+    - 1.9.0-preview
+    - 1.9.1-preview
+    - 2.0.0-exp.1
+    - 2.0.0-pre.3
+    - 2.0.0
+    - 2.0.1
+    - 2.1.0-exp.1
+    - 2.2.1-exp.1
+    - 2.3.0-exp.2
+    - 2.3.0-exp.3
+    - 3.0.0-exp.1
+    - 3.0.0
+    compatible:
+    - 2.0.1
+    - 2.1.0-exp.1
+    - 2.2.1-exp.1
+    - 2.3.0-exp.2
+    - 2.3.0-exp.3
+    - 3.0.0-exp.1
+    - 3.0.0
+    recommended: 2.0.1
+    deprecated: []
+  dependencies:
+  - name: com.unity.sentis
+    version: 2.1.0
+  - name: com.unity.modules.physics
+    version: 1.0.0
+  - name: com.unity.modules.jsonserialize
+    version: 1.0.0
+  - name: com.unity.modules.imageconversion
+    version: 1.0.0
+  resolvedDependencies:
+  - name: com.unity.sentis
+    version: 2.1.2
+  - name: com.unity.burst
+    version: 1.8.21
+  - name: com.unity.mathematics
+    version: 1.3.2
+  - name: com.unity.modules.jsonserialize
+    version: 1.0.0
+  - name: com.unity.collections
+    version: 2.5.1
+  - name: com.unity.test-framework
+    version: 1.5.1
+  - name: com.unity.ext.nunit
+    version: 2.0.5
+  - name: com.unity.modules.imgui
+    version: 1.0.0
+  - name: com.unity.nuget.mono-cecil
+    version: 1.11.4
+  - name: com.unity.test-framework.performance
+    version: 3.1.0
+  - name: com.unity.modules.imageconversion
+    version: 1.0.0
+  - name: com.unity.modules.physics
+    version: 1.0.0
+  keywords: []
+  registry:
+    id: main
+    name: 
+    url: https://packages.unity.com
+    scopes: []
+    isDefault: 1
+    capabilities: 7
+    configSource: 0
+  hideInEditor: 1
+  entitlements:
+    licensingModel: 1
+  isAssetStorePackage: 0
+  datePublishedTicks: 638637322569190000
+  documentationUrl: https://docs.unity3d.com/Packages/com.unity.ml-agents@3.0/manual/index.html
+  hasRepository: 1
+  repository:
+    type: git
+    url: https://github.com/Unity-Technologies/ml-agents.git
+    revision: 501ba880cc047f3efe0b140b6908ce26fa12b382
+    path: 
+  unityLifecycle:
+    version: 2.0.1
+    nextVersion: 
+    recommendedVersion: 
+    isDeprecated: 0
+    deprecationMessage: 
+  isDeprecated: 0
+  deprecationMessage: 
+  git:
+    hash: 
+    revision: 
+  upmReserved: '{"changelog":"### Major Changes\n#### com.unity.ml-agents / com.unity.ml-agents.extensions
+    (C#)\n- Upgraded to Sentis 2.1.0 ()\n- Upgraded to Sentis 2.0.0 (#6137)\n- Upgraded
+    to Sentis 1.3.0-pre.3 (#6070)\n- Upgraded to Sentis 1.3.0-exp.2 (#6013)\n- The
+    minimum supported Unity version was updated to 2023.2. (#6071)\n\n#### ml-agents
+    / ml-agents-envs\n- Upgraded to PyTorch 2.1.1. (#6013)\n\n### Minor Changes\n####
+    com.unity.ml-agents / com.unity.ml-agents.extensions (C#)\n- Added no-graphics-monitor.
+    (#6014)\n\n#### ml-agents / ml-agents-envs\n- Update Installation.md (#6004)\n-
+    Updated Using-Virtual-Environment.md (#6033)\n\n### Bug Fixes\n#### com.unity.ml-agents
+    / com.unity.ml-agents.extensions (C#)\n- Fix failing ci post upgrade (#6141)\n-
+    Fixed missing assembly reference for google protobuf. (#6099)\n- Fixed missing
+    tensor Dispose in ModelRunner. (#6028)\n- Fixed 3DBall sample package to remove
+    Barracuda dependency. (#6030)\n\n#### ml-agents / ml-agents-envs\n- Fix sample
+    code indentation in migrating.md (#5840)\n- Fixed continuous integration tests
+    (#6079)\n- Fixed bad like format (#6078)\n- Bumped numpy version to >=1.23.5,<1.24.0
+    (#6082)\n- Bumped onnx version to 1.15.0 (#6062)\n- Bumped protobuf version to
+    >=3.6,<21 (#6062)"}'
+  assetStore:
+    productId: 
+  fingerprint: 2b4ded88494d1338cea1b3eb7364ff4dfe142399
+  editorCompatibility:
+    compatibilityLevel: 0
+    minimumPackageVersion: 2.0.1
+    minimumUnityVersion: 2023.2.0a1
 - packageId: com.unity.multiplayer.center@1.0.0
   testable: 0
   isDirectDependency: 1
@@ -4775,6 +4927,136 @@ m_ResolvedPackages:
     compatibilityLevel: 0
     minimumPackageVersion: 2.1.0
     minimumUnityVersion: 2022.3.0a1
+- packageId: com.unity.sentis@2.1.2
+  testable: 0
+  isDirectDependency: 0
+  version: 2.1.2
+  source: 1
+  resolvedPath: /home/jason/code/drl/final/DRL-final/environment/Library/PackageCache/com.unity.sentis@c51693b52067
+  assetPath: Packages/com.unity.sentis
+  name: com.unity.sentis
+  displayName: Sentis
+  author:
+    name: 
+    email: 
+    url: 
+  category: 
+  type: 
+  description: 'Sentis is a neural network inference library. It enables you to import
+    trained neural network models, connect the network inputs and outputs to your
+    game code, and then run them locally in your end-user app. Use cases include
+    capabilities like natural language processing, object recognition, automated
+    game opponents, sensor data classification, and many more.
+
+
+    Sentis automatically
+    optimizes your network for real-time use to speed up inference. It also allows
+    you to tune your implementation further with tools like frame slicing, quantization,
+    and custom backend (i.e. compute type) dispatching.
+
+
+    Visit https://unity.com/sentis
+    for more resources.'
+  errors: []
+  versions:
+    all:
+    - 1.0.0-exp.6
+    - 1.1.0-exp.2
+    - 1.1.1-exp.2
+    - 1.2.0-exp.2
+    - 1.3.0-pre.1
+    - 1.3.0-pre.2
+    - 1.3.0-pre.3
+    - 1.4.0-pre.1
+    - 1.4.0-pre.2
+    - 1.4.0-pre.3
+    - 1.5.0-pre.2
+    - 1.5.0-pre.3
+    - 1.6.0-pre.1
+    - 2.0.0
+    - 2.1.0
+    - 2.1.1
+    - 2.1.2
+    - 2.1.3
+    compatible:
+    - 2.1.2
+    - 2.1.3
+    recommended: 2.1.3
+    deprecated: []
+  dependencies:
+  - name: com.unity.burst
+    version: 1.8.17
+  - name: com.unity.collections
+    version: 2.4.3
+  - name: com.unity.modules.imageconversion
+    version: 1.0.0
+  resolvedDependencies:
+  - name: com.unity.burst
+    version: 1.8.21
+  - name: com.unity.mathematics
+    version: 1.3.2
+  - name: com.unity.modules.jsonserialize
+    version: 1.0.0
+  - name: com.unity.collections
+    version: 2.5.1
+  - name: com.unity.test-framework
+    version: 1.5.1
+  - name: com.unity.ext.nunit
+    version: 2.0.5
+  - name: com.unity.modules.imgui
+    version: 1.0.0
+  - name: com.unity.nuget.mono-cecil
+    version: 1.11.4
+  - name: com.unity.test-framework.performance
+    version: 3.1.0
+  - name: com.unity.modules.imageconversion
+    version: 1.0.0
+  keywords: []
+  registry:
+    id: main
+    name: 
+    url: https://packages.unity.com
+    scopes: []
+    isDefault: 1
+    capabilities: 7
+    configSource: 0
+  hideInEditor: 1
+  entitlements:
+    licensingModel: 1
+  isAssetStorePackage: 0
+  datePublishedTicks: 638741825071190000
+  documentationUrl: https://docs.unity3d.com/Packages/com.unity.sentis@2.1/manual/index.html
+  hasRepository: 1
+  repository:
+    type: git
+    url: https://github.cds.internal.unity3d.com/unity/UnityInferenceEngine.git
+    revision: a3d9b8d1bf3e579ab0c6a21f5eafc91a3253faa3
+    path: 
+  unityLifecycle:
+    version: 2.1.2
+    nextVersion: 
+    recommendedVersion: 
+    isDeprecated: 0
+    deprecationMessage: 
+  isDeprecated: 0
+  deprecationMessage: 
+  git:
+    hash: 
+    revision: 
+  upmReserved: '{"changelog":"### Added\n- Support for accelerated inference using
+    [DirectML](https://learn.microsoft.com/en-us/windows/ai/directml/dml) in future
+    Unity versions\n- Support for RMSNormalization subgraph optimization\n\n### Changed\n-
+    Some methods in the TextureConverter have been made obsolete\n\n### Fixed\n-
+    Improved CPU backend performance by optimizing Burst job count\n- Reduced memory
+    usage when serializing and deserializing large models\n- Shader issues on XBOX
+    hardware\n- GPUPixel now reuses RenderTextures reducing garbage collection"}'
+  assetStore:
+    productId: 
+  fingerprint: c51693b520678de462e1dbf1515869d9d63b6e96
+  editorCompatibility:
+    compatibilityLevel: 0
+    minimumPackageVersion: 2.1.2
+    minimumUnityVersion: 2022.3.11f1
 - packageId: com.unity.searcher@4.9.3
   testable: 0
   isDirectDependency: 0

@@ -8,6 +8,9 @@ Library/Bee/artifacts/mvdfrm/Unity.Collections.Editor.ref.dll_87547A3728288A2A.m
 Library/Bee/artifacts/mvdfrm/Unity.Collections.ref.dll_6E80EEB68CD969F7.mvfrm
 Library/Bee/artifacts/mvdfrm/Unity.InputSystem.ForUI.ref.dll_CFD7856823C3CD5A.mvfrm
 Library/Bee/artifacts/mvdfrm/Unity.InputSystem.ref.dll_06424321BA44ABAB.mvfrm
+Library/Bee/artifacts/mvdfrm/Unity.ML-Agents.CommunicatorObjects.ref.dll_36C8FE78AA456EFF.mvfrm
+Library/Bee/artifacts/mvdfrm/Unity.ML-Agents.Editor.ref.dll_B240E59C6A6FDBE3.mvfrm
+Library/Bee/artifacts/mvdfrm/Unity.ML-Agents.ref.dll_7337BBA01CC210AE.mvfrm
 Library/Bee/artifacts/mvdfrm/Unity.Mathematics.Editor.ref.dll_3D2C2B72ECCBF4B9.mvfrm
 Library/Bee/artifacts/mvdfrm/Unity.Mathematics.ref.dll_F20355C132B4E278.mvfrm
 Library/Bee/artifacts/mvdfrm/Unity.Multiplayer.Center.Common.ref.dll_1579E59FCCBEB6B2.mvfrm
@@ -34,6 +37,11 @@ Library/Bee/artifacts/mvdfrm/Unity.Rendering.LightTransport.Editor.ref.dll_7EDFC
 Library/Bee/artifacts/mvdfrm/Unity.Rendering.LightTransport.Runtime.ref.dll_8D5D2B0951679953.mvfrm
 Library/Bee/artifacts/mvdfrm/Unity.Rider.Editor.ref.dll_9145F68A59D35CE5.mvfrm
 Library/Bee/artifacts/mvdfrm/Unity.Searcher.Editor.ref.dll_593125D8983B03B8.mvfrm
+Library/Bee/artifacts/mvdfrm/Unity.Sentis.Editor.ref.dll_6942232B65C56CDB.mvfrm
+Library/Bee/artifacts/mvdfrm/Unity.Sentis.MacBLAS.ref.dll_40657A6F156B3F53.mvfrm
+Library/Bee/artifacts/mvdfrm/Unity.Sentis.ONNX.ref.dll_05D2903B33F15497.mvfrm
+Library/Bee/artifacts/mvdfrm/Unity.Sentis.ref.dll_CAE4BFA63BC9D036.mvfrm
+Library/Bee/artifacts/mvdfrm/Unity.Sentis.iOSBLAS.ref.dll_89F1A84F6718BF51.mvfrm
 Library/Bee/artifacts/mvdfrm/Unity.Settings.Editor.ref.dll_C5D459AC3FA0C65A.mvfrm
 Library/Bee/artifacts/mvdfrm/Unity.ShaderGraph.Editor.ref.dll_B25B70C7A7E5DF46.mvfrm
 Library/Bee/artifacts/mvdfrm/Unity.TextMeshPro.Editor.ref.dll_B8A961BBD8ABE0FC.mvfrm
