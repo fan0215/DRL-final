@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic; // Required for List
 
 public class CarController : MonoBehaviour
 {
@@ -24,7 +25,7 @@ public class CarController : MonoBehaviour
     [Tooltip("How strong acceleration is. Corresponds to 'torquePower'.")]
     public float motorForce = 1500f;
     [Tooltip("Steering angle for front wheels.")]
-    public float maxSteeringAngle = 30f;
+    public float maxSteeringAngle = 40f;
     [Tooltip("Force applied to rear wheels when braking (Spacebar). Corresponds to 'brakeForce'.")]
     public float activeBrakeForce = 3000f;
     // Note: idleBrakeForce is intentionally omitted from driving logic to match your CarPhysics.cs
@@ -33,6 +34,10 @@ public class CarController : MonoBehaviour
     [Tooltip("Velocity magnitude below which the car is considered stopped.")]
     public float stopVelocityThreshold = 0.1f;
     // CenterOfMassOffset and its application are removed as per your request.
+
+    [Header("Checkpoint Spawn Points")]
+    [Tooltip("Assign empty GameObjects representing spawn positions and rotations for each checkpoint/stage.")]
+    public List<Transform> checkpointSpawnPoints = new List<Transform>(); // Assign these in Inspector
 
     // Private variables to store calculated torque and steer, mirroring CarPhysics.cs
     private float currentCalculatedTorque = 0f;
@@ -44,6 +49,39 @@ public class CarController : MonoBehaviour
 
     private float currentTorque = 0f;
     private float currentSteer = 0f;
+
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            Debug.LogError("CarController requires a Rigidbody component on the same GameObject.", this);
+            enabled = false; // Disable script if no Rigidbody
+            return;
+        }
+
+        // Center of Mass adjustment REMOVED as per your request.
+        // If you need it later:
+        // public Vector3 centerOfMassOffset = new Vector3(0, -0.75f, 0.1f); // Declare this above
+        // rb.centerOfMass += centerOfMassOffset; // Add this line
+
+        if (rootCheckpointManager == null)
+        {
+            rootCheckpointManager = FindObjectOfType<RootCheckpointManager>();
+            if (rootCheckpointManager == null)
+            {
+                Debug.LogWarning("CarController: RootCheckpointManager not found in the scene. Crash handling for 'Edge' collisions will not work.", this);
+            }
+        }
+
+        if (wheelFrontLeft == null || wheelFrontRight == null || wheelBackLeft == null || wheelBackRight == null)
+        {
+            Debug.LogError("One or more WheelColliders are not assigned in the CarController Inspector! Please assign all four.", this);
+            enabled = false;
+        }
+
+        ResetState(0);
+    }
 
     void Update()
     {
@@ -108,28 +146,55 @@ public class CarController : MonoBehaviour
                wheelsPhysicallyStopped;
     }
 
-    public void ResetState(Vector3 position, Quaternion rotation)
+    public void ResetState(int spawnPointIndex)
     {
-        // transform.position = position;
-        // transform.rotation = rotation;
-        // if (rb != null)
-        // {
-        //     rb.linearVelocity = Vector3.zero;
-        //     rb.angularVelocity = Vector3.zero;
-        // }
-        // WheelCollider[] currentActiveWheels = { wheelFrontLeft, wheelFrontRight, wheelBackLeft, wheelBackRight };
-        // foreach (WheelCollider wc_reset in currentActiveWheels) // Renamed wc to wc_reset
+        if (checkpointSpawnPoints == null || checkpointSpawnPoints.Count == 0)
+        {
+            Debug.LogError("CarController: 'Checkpoint Spawn Points' list is not set up or is empty! Cannot reset state.", this);
+            return;
+        }
+        if (spawnPointIndex < 0 || spawnPointIndex >= checkpointSpawnPoints.Count || checkpointSpawnPoints[spawnPointIndex] == null)
+        {
+            Debug.LogError($"CarController: Invalid spawnPointIndex '{spawnPointIndex}' or the spawn point Transform at that index is null. Cannot reset state. Checking for fallback to index 0.", this);
+            if (checkpointSpawnPoints.Count > 0 && checkpointSpawnPoints[0] != null)
+            {
+                spawnPointIndex = 0; // Fallback to the first defined spawn point if valid
+                Debug.LogWarning($"CarController: Using fallback spawn point index 0.", this);
+            }
+            else
+            {
+                Debug.LogError("CarController: No valid spawn points available, including fallback index 0. Reset cannot proceed.", this);
+                return; // Cannot proceed if no valid spawn points at all
+            }
+        }
+
+        Transform selectedSpawnPoint = checkpointSpawnPoints[spawnPointIndex];
+        transform.position = selectedSpawnPoint.position;
+        transform.rotation = selectedSpawnPoint.rotation;
+
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+
+        // Reset internal calculation states used by driving logic
+        currentCalculatedTorque = 0f;
+        currentCalculatedSteerAngle = 0f;
+
+        // Reset WheelCollider states
+        // WheelCollider[] allWheels = { wheelFrontLeft, wheelFrontRight, wheelBackLeft, wheelBackRight };
+        // foreach (WheelCollider wc_reset in allWheels)
         // {
         //     if (wc_reset != null)
         //     {
         //         wc_reset.motorTorque = 0;
-        //         // On reset, apply activeBrakeForce to all wheels to ensure it stops quickly
-        //         wc_reset.brakeTorque = activeBrakeForce; 
+        //         // Apply activeBrakeForce to all wheels on reset to ensure it stops quickly.
+        //         // This is a common practice for reset, even if driving logic brakes rear only.
+        //         wc_reset.brakeTorque = activeBrakeForce;
         //         wc_reset.steerAngle = 0;
         //     }
         // }
-        // currentMotorInput = 0f;
-        // currentSteerInput = 0f;
-        // isActiveBraking = true; // Set to true to reflect brakes being applied during reset
+        Debug.Log($"Car has been reset to spawn point index: {spawnPointIndex} (Name: {selectedSpawnPoint.name})");
     }
 }

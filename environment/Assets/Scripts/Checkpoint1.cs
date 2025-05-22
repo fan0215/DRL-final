@@ -5,6 +5,7 @@ public class Checkpoint1 : Checkpoint
     // In Inspector, assign Checkpoint2-1 object to 'nextCheckpoint_A'
     protected override void HandleCollisionLogic(string wheelType, CarController car)
     {
+        Debug.Log($"Collision.");
         if (wheelType == "FrontWheel")
         {
             Debug.Log($"{name} successfully passed by FrontWheel.");

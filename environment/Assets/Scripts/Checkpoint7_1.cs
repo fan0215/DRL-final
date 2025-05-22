@@ -2,64 +2,72 @@ using UnityEngine;
 
 public class Checkpoint7_1 : Checkpoint
 {
-    // In Inspector, assign Checkpoint7-2 to 'nextCheckpoint_A'
-    private bool carStoppedPrematurely = false;
-    private CarController _carReference; // To monitor IsFullyStopped
+    // Assign Checkpoint7-2 to 'nextCheckpoint_A' in Inspector
+    private bool carStoppedWhileActive = false; // To detect if car stops BEFORE back wheel exits
+    private CarController carRef;
 
     public override void ActivateCheckpoint()
     {
         base.ActivateCheckpoint();
-        carStoppedPrematurely = false;
-        _carReference = null; // Reset car reference on activation
-    }
-
-    // Use Update to check if car stops while this checkpoint is active
-    void Update()
-    {
-        if (isActive && !carStoppedPrematurely && _carReference != null)
-        {
-            if (_carReference.IsFullyStopped())
-            {
-                Debug.Log($"{name}: Car detected as stopped PREMATURELY while active and waiting for back wheel exit.");
-                carStoppedPrematurely = true;
-                // The actual crash due to this premature stop will be triggered if the back wheel eventually exits,
-                // or if the rules imply an immediate crash (which would need HandleCrash() here).
-                // Based on "If the car stopped before 7-1 touches backwheel" - this is if it stops while active
-                // *before* the backwheel successfully *exits*.
-                // Let HandleExitLogic check this flag.
-            }
-        }
+        carStoppedWhileActive = false;
+        carRef = null;
+        Debug.Log($"{name} (CP7-1) activated. Waiting for BackWheel to pass (exit).");
     }
     
     protected override void HandleCollisionLogic(string wheelType, CarController car)
     {
-        // Store car reference when it first enters, primarily for the Update stop check.
-        if (_carReference == null)
-        {
-            _carReference = car;
-        }
-        // This checkpoint's main logic is on exit.
+        if (carRef == null) carRef = car; // Get car reference on first contact
+        // Main logic is on exit.
+        // Rule: "If the car stopped before 7-1 touches backwheel" -
+        // This is tricky if "touches" means enters. Current logic is "stops while 7-1 is active AND before backwheel exits".
     }
 
-    protected override void HandleExitLogic(string wheelType, CarController car)
+    protected override void HandleExitLogic(string wheelType, CarController car) // Called when a wheel exits
     {
         if (!isActive) return;
 
         if (wheelType == "BackWheel")
         {
-            if (carStoppedPrematurely)
+            if (carStoppedWhileActive) // Checked by Update
             {
-                Debug.Log($"{name}: BackWheel exited, but car had stopped prematurely. Resetting.");
-                rootManager.HandleCrash();
+                Debug.Log($"{name} (CP7-1): BackWheel exited, but car had stopped prematurely while 7-1 was active. CRASH.");
+                rootManager.HandleCrash(); // Crash as per original implicit rule
             }
             else
             {
-                Debug.Log($"{name}: BackWheel successfully exited. Progressing.");
-                if (nextCheckpoint_A != null)
+                Debug.Log($"{name} (CP7-1): BackWheel successfully exited. Deactivating self, activating CP7-2, and initiating CP7-2 stop condition.");
+                DeactivateCheckpoint(); 
+                if (nextCheckpoint_A != null) // nextCheckpoint_A should be CP7-2
                 {
-                    rootManager.AdvanceToSegment(nextCheckpoint_A);
+                    nextCheckpoint_A.ActivateCheckpoint();
+                    // NEW: Tell RootManager to start monitoring for CP7-2's stop condition
+                    if (car != null) // Pass the car reference
+                    {
+                        rootManager.InitiateCheckpoint7_2StopCondition(car);
+                    }
+                    else if (carRef != null)
+                    {
+                         rootManager.InitiateCheckpoint7_2StopCondition(carRef);
+                    }
+                     else
+                    {
+                        Debug.LogError($"{name}: Cannot initiate CP7-2 stop condition, CarController reference is missing.");
+                    }
                 }
-                else Debug.LogError($"{name}: nextCheckpoint_A (for Checkpoint 7-2) is not assigned!");
+                else Debug.LogError($"{name}: nextCheckpoint_A (for CP7-2) is not assigned!");
+            }
+        }
+    }
+
+    void Update()
+    {
+        // Monitor if car stops while this checkpoint is active AND before back wheel has successfully exited.
+        if (isActive && !carStoppedWhileActive && carRef != null)
+        {
+            if (carRef.IsFullyStopped())
+            {
+                Debug.Log($"{name} (CP7-1): Car detected as stopped while this checkpoint is active and awaiting back wheel exit. Marked as premature stop.");
+                carStoppedWhileActive = true; // Flag this. Exit logic will determine if it's a crash.
             }
         }
     }
