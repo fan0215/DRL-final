@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 3
   tags:
   - Edge
+  - Car
+  - FrontWheel
+  - BackWheel
   layers:
   - Default
   - TransparentFX

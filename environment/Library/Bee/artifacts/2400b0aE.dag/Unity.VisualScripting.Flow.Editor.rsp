@@ -380,6 +380,7 @@
 -r:"Library/PackageCache/com.unity.collections@56bff8827a7e/Unity.Collections.LowLevel.ILSupport/Unity.Collections.LowLevel.ILSupport.dll"
 -r:"Library/PackageCache/com.unity.ext.nunit@b16e6d09cd93/net40/unity-custom/nunit.framework.dll"
 -r:"Library/PackageCache/com.unity.ext.nunit@b16e6d09cd93/net40/unity-custom/nunit.framework.dll"
+-r:"Library/PackageCache/com.unity.ml-agents@2b4ded88494d/Plugins/Google.Protobuf_Packed.dll"
 -r:"Library/PackageCache/com.unity.ml-agents@2b4ded88494d/Plugins/ProtoBuffer/Grpc.Core.dll"
 -r:"Library/PackageCache/com.unity.ml-agents@2b4ded88494d/Plugins/System.IO.Abstractions.TestingHelpers.dll"
 -r:"Library/PackageCache/com.unity.ml-agents@2b4ded88494d/Plugins/System.IO.Abstractions.dll"

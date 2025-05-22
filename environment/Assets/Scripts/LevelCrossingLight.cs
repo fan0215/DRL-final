@@ -1,49 +1,110 @@
 using UnityEngine;
-using System.Collections; // Needed for Coroutines
+using System.Collections; // Required for Coroutines
 
-public class LevelCrossingLightController : MonoBehaviour
+public class LevelCrossingLight : MonoBehaviour
 {
-    public GameObject Light1;
-    public GameObject Light2;
+    [Header("Light GameObjects")]
+    public GameObject leftLight;
+    public GameObject rightLight;
 
-    public Material lightOnMaterial;
-    public Material lightOffMaterial;
+    [Header("Light Materials")]
+    public Material lightOnMaterial;    // Assign the material for when the light is ON
+    public Material lightOffMaterial;   // Assign the material for when the light is OFF
 
-    public float switchDuration = 1f;
+    [Header("Flashing Parameters")]
+    public float flashDuration = 0.5f;   // How long each light stays on/off during a flash cycle
+    public float activeDuration = 10f;   // How long the lights flash in total
 
-    private Renderer Light1Renderer;
-    private Renderer Light2Renderer;
+    [Header("State")]
+    public bool isLightActive = false; // Public property to check activation status
 
-    void Start()
+    // Private references to the Renderers
+    private Renderer leftRenderer;
+    private Renderer rightRenderer;
+    private Coroutine currentFlashRoutine; // To keep track of the running coroutine
+
+    // Awake is called when the script instance is being loaded
+    void Awake()
     {
         // Get the Renderer components from the spheres
-        Light1Renderer = Light1.GetComponent<Renderer>();
-        Light2Renderer = Light2.GetComponent<Renderer>();
+        if (leftLight != null) leftRenderer = leftLight.GetComponent<Renderer>();
+        if (rightLight != null) rightRenderer = rightLight.GetComponent<Renderer>();
 
-        // Start the traffic light sequence
-        StartCoroutine(TrafficLightSequence());
+        // Optional: Log warnings if any renderers couldn't be found
+        if (leftRenderer == null) Debug.LogWarning("LeftLight GameObject or its Renderer not assigned/found on LevelCrossingLight script.", this);
+        if (rightRenderer == null) Debug.LogWarning("RightLight GameObject or its Renderer not assigned/found on LevelCrossingLight script.", this);
     }
 
-    IEnumerator TrafficLightSequence()
+    // Start is called before the first frame update
+    void Start()
     {
-        while (true) // Loop forever
-        {
-            SetLight(Light1Renderer, lightOnMaterial);
-            SetLight(Light2Renderer, lightOffMaterial);
-            yield return new WaitForSeconds(switchDuration);
+        // Ensure lights are off at the start of the scene
+        TurnLightsOff();
+    }
 
-            SetLight(Light1Renderer, lightOffMaterial);
-            SetLight(Light2Renderer, lightOnMaterial);
-            yield return new WaitForSeconds(switchDuration);
+    // Public method to activate or deactivate the crossing lights
+    public void SetLightActive(bool status)
+    {
+        if (isLightActive == status) return; // Avoid re-triggering if already in desired state
+
+        isLightActive = status;
+        Debug.Log($"Level Crossing Light Active: {isLightActive}");
+
+        if (status)
+        {
+            // If activation is requested, stop any existing routine and start a new one
+            if (currentFlashRoutine != null)
+            {
+                StopCoroutine(currentFlashRoutine);
+            }
+            currentFlashRoutine = StartCoroutine(FlashLightsRoutine());
+        }
+        else
+        {
+            // If deactivation is requested, stop the routine and turn lights off
+            if (currentFlashRoutine != null)
+            {
+                StopCoroutine(currentFlashRoutine);
+                currentFlashRoutine = null;
+            }
+            TurnLightsOff();
         }
     }
 
-    // Helper function to switch the material of a light
-    void SetLight(Renderer lightRenderer, Material targetMaterial)
+    // Coroutine for the flashing sequence
+    private IEnumerator FlashLightsRoutine()
     {
-        if (lightRenderer != null && targetMaterial != null)
+        float timer = 0f;
+
+        // Loop for the total activeDuration
+        while (timer < activeDuration)
         {
-            lightRenderer.material = targetMaterial;
+            // Left light ON, Right light OFF
+            if (leftRenderer != null) leftRenderer.material = lightOnMaterial;
+            if (rightRenderer != null) rightRenderer.material = lightOffMaterial;
+            yield return new WaitForSeconds(flashDuration);
+            timer += flashDuration;
+
+            // Check if activeDuration is met during the yield
+            if (timer >= activeDuration) break;
+
+            // Left light OFF, Right light ON
+            if (leftRenderer != null) leftRenderer.material = lightOffMaterial;
+            if (rightRenderer != null) rightRenderer.material = lightOnMaterial;
+            yield return new WaitForSeconds(flashDuration);
+            timer += flashDuration;
         }
+
+        // After the loop, turn both lights off and deactivate
+        TurnLightsOff();
+        isLightActive = false; // Ensure state is correctly updated after sequence
+        Debug.Log("Level Crossing Light sequence finished. Deactivated.");
+    }
+
+    // Helper method to ensure both lights are off
+    private void TurnLightsOff()
+    {
+        if (leftRenderer != null) leftRenderer.material = lightOffMaterial;
+        if (rightRenderer != null) rightRenderer.material = lightOffMaterial;
     }
 }
