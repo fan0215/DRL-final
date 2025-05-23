@@ -23,11 +23,11 @@ public class CarController : MonoBehaviour
 
     [Header("Car Driving Parameters (Logic from your CarPhysics script)")]
     [Tooltip("How strong acceleration is. Corresponds to 'torquePower'.")]
-    public float motorForce = 1500f;
+    public float motorForce = 3000f;
     [Tooltip("Steering angle for front wheels.")]
-    public float maxSteeringAngle = 40f;
+    public float maxSteeringAngle = 50f;
     [Tooltip("Force applied to rear wheels when braking (Spacebar). Corresponds to 'brakeForce'.")]
-    public float activeBrakeForce = 3000f;
+    public float activeBrakeForce = 5000f;
     // Note: idleBrakeForce is intentionally omitted from driving logic to match your CarPhysics.cs
 
     [Header("Car State Properties (for Checkpoint System)")]
@@ -39,7 +39,12 @@ public class CarController : MonoBehaviour
     [Tooltip("Assign empty GameObjects representing spawn positions and rotations for each checkpoint/stage.")]
     public List<Transform> checkpointSpawnPoints = new List<Transform>(); // Assign these in Inspector
 
-    // Private variables to store calculated torque and steer, mirroring CarPhysics.cs
+    // Inputs set by Agent
+    private float currentAcceleratorInput = 0f; // 0 to 1
+    private float currentBrakeInput = 0f;       // 0 to 1
+    private float currentSteerInput = 0f;       // -1 to 1
+
+    // // Private variables to store calculated torque and steer, mirroring CarPhysics.cs
     private float currentCalculatedTorque = 0f;
     private float currentCalculatedSteerAngle = 0f;
     // isActiveBraking (from input) will be used directly
@@ -60,11 +65,6 @@ public class CarController : MonoBehaviour
             return;
         }
 
-        // Center of Mass adjustment REMOVED as per your request.
-        // If you need it later:
-        // public Vector3 centerOfMassOffset = new Vector3(0, -0.75f, 0.1f); // Declare this above
-        // rb.centerOfMass += centerOfMassOffset; // Add this line
-
         if (rootCheckpointManager == null)
         {
             rootCheckpointManager = FindObjectOfType<RootCheckpointManager>();
@@ -83,23 +83,77 @@ public class CarController : MonoBehaviour
         ResetState(0);
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        // Get input values
-        float move = Input.GetAxis("Vertical"); // Up/Down arrow or W/S
-        float steer = Input.GetAxis("Horizontal"); // Left/Right arrow or A/D
-        bool isBraking = Input.GetKey(KeyCode.Space); // Spacebar for brakes
+        // human driving
+        // // Get input values
+        // float move = Input.GetAxis("Vertical"); // Up/Down arrow or W/S
+        // float steer = Input.GetAxis("Horizontal"); // Left/Right arrow or A/D
+        // bool isBraking = Input.GetKey(KeyCode.Space); // Spacebar for brakes
 
-        // Apply torque to back wheels
-        currentTorque = move * torquePower;
+        // // Apply torque to back wheels
+        // currentTorque = move * torquePower;
 
-        // Apply steering to front wheels
-        currentSteer = steer * maxSteeringAngle;
+        // // Apply steering to front wheels
+        // currentSteer = steer * maxSteeringAngle;
 
-        // Apply forces to wheels
-        ApplyTorque();
-        ApplySteering();
-        ApplyBrakes(isBraking);
+        // // Apply forces to wheels
+        // ApplyTorque();
+        // ApplySteering();
+        // ApplyBrakes(isBraking);
+
+        ApplyAgentSteering();
+        ApplyAgentDriveAndBrake();
+    }
+
+    // Called by CarAgent.cs
+    public void SetAgentInputs(float accelerator, float brake, float steer)
+    {
+        currentAcceleratorInput = Mathf.Clamp01(accelerator);
+        currentBrakeInput = Mathf.Clamp01(brake);
+        currentSteerInput = Mathf.Clamp(steer, -1f, 1f);
+    }
+
+    void ApplyAgentSteering()
+    {
+        float targetSteerAngle = currentSteerInput * maxSteeringAngle;
+        if (wheelFrontLeft != null) wheelFrontLeft.steerAngle = targetSteerAngle;
+        if (wheelFrontRight != null) wheelFrontRight.steerAngle = targetSteerAngle;
+    }
+
+    void ApplyAgentDriveAndBrake()
+    {
+        // Accelerator input (0 to 1)
+        float motorTorque = currentAcceleratorInput * motorForce;
+
+        // Brake input (0 to 1)
+        // Apply brake to all wheels for effective stopping by agent.
+        float brakeTorque = currentBrakeInput * activeBrakeForce;
+
+        // If braking significantly, reduce motor torque (optional, but common)
+        if (currentBrakeInput > 0.1f)
+        {
+            motorTorque *= (1f - currentBrakeInput * 0.8f); // Reduce motor if braking
+        }
+
+        // Apply motor torque (only forward, no reverse with current action space)
+        if (wheelBackLeft != null) wheelBackLeft.motorTorque = motorTorque;
+        if (wheelBackRight != null) wheelBackRight.motorTorque = motorTorque;
+
+        // Apply brake torque to all wheels
+        if (wheelFrontLeft != null) wheelFrontLeft.brakeTorque = brakeTorque;
+        if (wheelFrontRight != null) wheelFrontRight.brakeTorque = brakeTorque;
+        if (wheelBackLeft != null) wheelBackLeft.brakeTorque = brakeTorque;
+        if (wheelBackRight != null) wheelBackRight.brakeTorque = brakeTorque;
+    }
+
+    public float GetCurrentSteerAngle() // For agent observation
+    {
+        if (wheelFrontLeft != null)
+        {
+            return wheelFrontLeft.steerAngle; // Actual current steer angle
+        }
+        return 0f;
     }
 
     void ApplyTorque()
@@ -116,7 +170,7 @@ public class CarController : MonoBehaviour
 
     void ApplyBrakes(bool isBraking)
     {
-        float brake = isBraking ? brakeForce : 0f;
+        float brake = isBraking ? activeBrakeForce : 0f;
         wheelBackLeft.brakeTorque = brake;
         wheelBackRight.brakeTorque = brake;
     }
