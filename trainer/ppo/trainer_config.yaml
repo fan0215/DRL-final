@@ -21,3 +21,11 @@ behaviors:
     max_steps: 500000 # Total steps for training
     time_horizon: 64
     summary_freq: 10000
+engine_settings:
+  width: 1600
+  height: 900
+  quality_level: 5
+  time_scale: 20
+  target_frame_rate: -1
+  capture_frame_rate: 60
+  no_graphics: false
