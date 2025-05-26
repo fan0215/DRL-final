@@ -69,9 +69,10 @@ After some times, your environment should be ready.
 There are two ways to run the training code.
 * **Using a built executable (recommended):**
     ```bash
+    # Replace <path_to_config> with your config for trainer
     # Replace <your_run_id> with a descriptive name for your training run
     # Replace <path_to_executable> with the actual path (the directory) to your built Unity environment
-    mlagents-learn config/driving_agent_config.yaml --run-id=<your_run_id> --env=<path_to_executable> --no-graphics 
+    mlagents-learn <path_to_config> --run-id=<your_run_id> --env=<path_to_executable> --no-graphics 
     # Use --no-graphics for headless builds
     ```
     * If you have multiple environment instances in your build or want to run multiple parallel executables, add `--num-envs=<number_of_environments>`.
