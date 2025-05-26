@@ -3,7 +3,6 @@ using System.Collections;
 
 public class Checkpoint5_2 : Checkpoint
 {
-    // In Inspector, assign Checkpoint6-1 to 'nextCheckpoint_A'
     public float timeLimitSeconds = 7.0f; // Adjustable time limit
     private Coroutine timerCoroutine;
     private bool timeHasExpired = false;
@@ -37,7 +36,6 @@ public class Checkpoint5_2 : Checkpoint
         {
             timeHasExpired = true;
             Debug.Log($"{name} timer EXPIRED. Any further correct pass will fail due to time.");
-            // Optional: Could force a crash here if desired, but current logic is to check on collision.
         }
     }
 

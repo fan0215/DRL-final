@@ -1,11 +1,11 @@
 using UnityEngine;
-using System.Collections.Generic; // Required for List
+using System.Collections.Generic;
 
 public class CarController : MonoBehaviour
 {
     [Header("References")]
-    public RootCheckpointManager rootCheckpointManager; // Assign in Inspector
-    public Rigidbody rb;                                // Should be auto-assigned if on the same GameObject
+    public RootCheckpointManager rootCheckpointManager;
+    public Rigidbody rb;
 
     [Header("Wheel Colliders (Assign from Hierarchy)")]
     public WheelCollider wheelBackLeft;
@@ -22,11 +22,11 @@ public class CarController : MonoBehaviour
 
     [Header("Car Driving Parameters (Logic from your CarPhysics script)")]
     [Tooltip("How strong acceleration is. Corresponds to 'torquePower'.")]
-    public float motorForce = 1500f;
+    public float motorForce = 3000f;
     [Tooltip("Steering angle for front wheels.")]
-    public float maxSteeringAngle = 30f;
+    public float maxSteeringAngle = 60f;
     [Tooltip("Force applied to rear wheels when braking (Spacebar). Corresponds to 'brakeForce'.")]
-    public float activeBrakeForce = 3000f;
+    public float activeBrakeForce = 5000f;
     [Tooltip("This variable is present for consistency but NOT USED by the current driving logic (set to 0).")]
     public float idleBrakeForce = 0f;
 
@@ -42,6 +42,10 @@ public class CarController : MonoBehaviour
     private float currentCalculatedSteerAngle = 0f;
     private bool previousFrameBrakingStatusForLog = false; // For logging brake changes
 
+    private float currentAcceleratorInput = 0f; // -1 to 1
+    private float currentBrakeInput = 0f;       //  0 to 1
+    private float currentSteerInput = 0f;       // -1 to 1
+
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -56,7 +60,7 @@ public class CarController : MonoBehaviour
         if (rootCheckpointManager == null)
         {
             rootCheckpointManager = FindObjectOfType<RootCheckpointManager>();
-             if (rootCheckpointManager == null)
+            if (rootCheckpointManager == null)
                 Debug.LogWarning("CarController: RootCheckpointManager not found. Crash handling will not work.", this);
         }
 
@@ -65,72 +69,72 @@ public class CarController : MonoBehaviour
             Debug.LogError("One or more WheelColliders are not assigned in the CarController Inspector!", this);
             enabled = false;
         }
+
+        ResetState(0);
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        // --- Start Update Debug Log ---
-        // if (Time.frameCount % 60 == 0) // Log once a second to reduce spam after initial burst
-        //    Debug.Log($"CarController Update - Frame: {Time.frameCount}, Time: {Time.time:F2}");
-        // --- End Update Debug Log ---
-
-        float moveInput = Input.GetAxis("Vertical");
-        float steerInput = Input.GetAxis("Horizontal");
-        bool isSpacebarBraking = Input.GetKey(KeyCode.Space);
-
-        currentCalculatedTorque = moveInput * motorForce;
-        currentCalculatedSteerAngle = steerInput * maxSteeringAngle;
-
-        ApplyMotorToWheels();
-        ApplySteeringToWheels();
-        ApplyBrakesToWheels(isSpacebarBraking);
+        // pass
     }
 
-    // You might prefer physics in FixedUpdate, but sticking to Update as per your working script's structure
-    // void FixedUpdate() { /* If you move physics here, move ApplyMotor, ApplySteering, ApplyBrakes, UpdateWheelVisuals */ }
-
-    void ApplyMotorToWheels()
+    // Called by CarAgent.cs
+    public void SetAgentInputs(float accelerator, float brake, float steer)
     {
-        if (wheelBackLeft != null) wheelBackLeft.motorTorque = currentCalculatedTorque;
-        if (wheelBackRight != null) wheelBackRight.motorTorque = currentCalculatedTorque;
+        currentAcceleratorInput = Mathf.Clamp(accelerator, -1f, 1f);
+        currentBrakeInput = Mathf.Clamp01(brake);
+        currentSteerInput = Mathf.Clamp(steer, -1f, 1f);
     }
 
-    void ApplySteeringToWheels()
+    void ApplyAgentSteering()
     {
-        if (wheelFrontLeft != null) wheelFrontLeft.steerAngle = currentCalculatedSteerAngle;
-        if (wheelFrontRight != null) wheelFrontRight.steerAngle = currentCalculatedSteerAngle;
+        float targetSteerAngle = currentSteerInput * maxSteeringAngle;
+        if (wheelFrontLeft != null) wheelFrontLeft.steerAngle = targetSteerAngle;
+        if (wheelFrontRight != null) wheelFrontRight.steerAngle = targetSteerAngle;
     }
 
-    void ApplyBrakesToWheels(bool isBrakingNow)
+    void ApplyAgentDriveAndBrake()
     {
-        float brakeValueToApply = isBrakingNow ? activeBrakeForce : 0f;
-        if (wheelBackLeft != null) wheelBackLeft.brakeTorque = brakeValueToApply;
-        if (wheelBackRight != null) wheelBackRight.brakeTorque = brakeValueToApply;
+        float motorTorque = currentAcceleratorInput * motorForce;
+        float brakeTorque = currentBrakeInput * activeBrakeForce;
 
-        if (wheelFrontLeft != null) wheelFrontLeft.brakeTorque = 0f;
-        if (wheelFrontRight != null) wheelFrontRight.brakeTorque = 0f;
-        
-        // if (Time.time < 5.0f || (Time.time - _lastResetTime) < 5.0f) // Debug brake application
-        //    Debug.Log($"ApplyBrakes - isBrakingNow: {isBrakingNow}, Applied Rear Brake: {brakeValueToApply}");
+        // If braking significantly, reduce motor torque
+        if (currentBrakeInput > 0.1f)
+        {
+            motorTorque *= (1.0f - currentBrakeInput);
+        }
+
+        if (wheelBackLeft != null) wheelBackLeft.motorTorque = motorTorque;
+        if (wheelBackRight != null) wheelBackRight.motorTorque = motorTorque;
+
+        if (wheelFrontLeft != null) wheelFrontLeft.brakeTorque = brakeTorque;
+        if (wheelFrontRight != null) wheelFrontRight.brakeTorque = brakeTorque;
+        if (wheelBackLeft != null) wheelBackLeft.brakeTorque = brakeTorque;
+        if (wheelBackRight != null) wheelBackRight.brakeTorque = brakeTorque;
     }
 
-    void UpdateWheelVisuals()
+    public float GetCurrentSteerAngle()
     {
-        UpdateSingleWheel(wheelFrontLeft, wheelFL_Transform);
-        UpdateSingleWheel(wheelFrontRight, wheelFR_Transform);
-        UpdateSingleWheel(wheelBackLeft, wheelBL_Transform);
-        UpdateSingleWheel(wheelBackRight, wheelBR_Transform);
+        if (wheelFrontLeft != null)
+        {
+            return wheelFrontLeft.steerAngle;
+        }
+        return 0f;
     }
 
-    void UpdateSingleWheel(WheelCollider wc, Transform visualWheelTransform)
-    {
-        if (visualWheelTransform == null || wc == null) return;
-        Vector3 position;
-        Quaternion rotation;
-        wc.GetWorldPose(out position, out rotation);
-        visualWheelTransform.position = position;
-        visualWheelTransform.rotation = rotation * wheelVisualsRotationOffset;
-    }
+    // void Update()
+    // {
+    //     float moveInput = Input.GetAxis("Vertical");
+    //     float steerInput = Input.GetAxis("Horizontal");
+    //     bool isSpacebarBraking = Input.GetKey(KeyCode.Space);
+
+    //     currentCalculatedTorque = moveInput * motorForce;
+    //     currentCalculatedSteerAngle = steerInput * maxSteeringAngle;
+
+    //     ApplyMotorToWheels();
+    //     ApplySteeringToWheels();
+    //     ApplyBrakesToWheels(isSpacebarBraking);
+    // }
 
     void OnCollisionEnter(Collision collision)
     {
@@ -152,9 +156,7 @@ public class CarController : MonoBehaviour
             if (wc_check != null) wheelsPhysicallyStopped &= (Mathf.Abs(wc_check.rpm) < 10);
             else { wheelsPhysicallyStopped = false; break; }
         }
-        return rb.linearVelocity.magnitude < stopVelocityThreshold &&
-               rb.angularVelocity.magnitude < stopVelocityThreshold &&
-               wheelsPhysicallyStopped;
+        return rb.linearVelocity.magnitude < stopVelocityThreshold && rb.angularVelocity.magnitude < stopVelocityThreshold && wheelsPhysicallyStopped;
     }
 
     private float _lastResetTime = -10f; // For debug logging after reset
@@ -193,42 +195,6 @@ public class CarController : MonoBehaviour
         currentCalculatedSteerAngle = 0f;
         Debug.Log("Internal calculated torque/steer reset to 0.");
 
-        WheelCollider[] allWheels = { wheelFrontLeft, wheelFrontRight, wheelBackLeft, wheelBackRight };
-        foreach (WheelCollider wc_reset in allWheels)
-        {
-            if (wc_reset != null)
-            {
-                wc_reset.motorTorque = 0;
-                // TEST: Try setting brakeTorque to 0 initially on reset to see if it releases immediately
-                // wc_reset.brakeTorque = activeBrakeForce; // Original: Apply brakes to stop
-                wc_reset.brakeTorque = 0f; // TEST: No brake on reset
-                wc_reset.steerAngle = 0;
-                Debug.Log($"Wheel {wc_reset.name}: MotorT=0, BrakeT={wc_reset.brakeTorque}, SteerA=0");
-
-            }
-        }
         Debug.Log($"Car has been reset. Next Update frame will read fresh inputs.");
-    }
-
-    // Helper for detailed wheel state logging
-    void LogWheelStates(string context)
-    {
-        Debug.Log($"--- {context} Wheel States (Frame: {Time.frameCount}) ---");
-        if (rb != null) Debug.Log($"Car RB Vel: {rb.linearVelocity.magnitude:F2}, AngVel: {rb.angularVelocity.magnitude:F2}, IsKinematic: {rb.isKinematic}");
-
-        WheelCollider[] wheelsToCheck = { wheelFrontLeft, wheelFrontRight, wheelBackLeft, wheelBackRight };
-        string[] wheelNames = { "FL", "FR", "BL", "BR" };
-        for(int i=0; i < wheelsToCheck.Length; i++)
-        {
-            if (wheelsToCheck[i] != null)
-            {
-                Debug.Log($"{wheelNames[i]}: Grounded={wheelsToCheck[i].isGrounded}, RPM={wheelsToCheck[i].rpm:F1}, MotorT={wheelsToCheck[i].motorTorque:F1}, BrakeT={wheelsToCheck[i].brakeTorque:F1}, SteerA={wheelsToCheck[i].steerAngle:F1}, Radius={wheelsToCheck[i].radius:F2}");
-            }
-            else
-            {
-                Debug.Log($"{wheelNames[i]}: NOT ASSIGNED");
-            }
-        }
-        Debug.Log("------------------------------------");
     }
 }

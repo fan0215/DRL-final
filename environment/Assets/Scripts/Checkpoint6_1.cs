@@ -30,6 +30,5 @@ public class Checkpoint6_1 : Checkpoint
             rootManager.StartCheckingForCP6StopCondition(car); // Notify RootManager
             DeactivateCheckpoint(); // Deactivate 6-1 itself
         }
-        // No penalty for other wheel types, just waits for FrontWheel.
     }
 }

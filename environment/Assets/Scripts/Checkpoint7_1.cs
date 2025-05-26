@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class Checkpoint7_1 : Checkpoint
 {
-    // Assign Checkpoint7-2 to 'nextCheckpoint_A' in Inspector
     private bool carStoppedWhileActive = false; // To detect if car stops BEFORE back wheel exits
     private CarController carRef;
 
@@ -17,9 +16,6 @@ public class Checkpoint7_1 : Checkpoint
     protected override void HandleCollisionLogic(string wheelType, CarController car)
     {
         if (carRef == null) carRef = car; // Get car reference on first contact
-        // Main logic is on exit.
-        // Rule: "If the car stopped before 7-1 touches backwheel" -
-        // This is tricky if "touches" means enters. Current logic is "stops while 7-1 is active AND before backwheel exits".
     }
 
     protected override void HandleExitLogic(string wheelType, CarController car) // Called when a wheel exits
@@ -40,7 +36,6 @@ public class Checkpoint7_1 : Checkpoint
                 if (nextCheckpoint_A != null) // nextCheckpoint_A should be CP7-2
                 {
                     nextCheckpoint_A.ActivateCheckpoint();
-                    // NEW: Tell RootManager to start monitoring for CP7-2's stop condition
                     if (car != null) // Pass the car reference
                     {
                         rootManager.InitiateCheckpoint7_2StopCondition(car);

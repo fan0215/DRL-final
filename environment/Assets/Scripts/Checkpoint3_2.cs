@@ -9,9 +9,8 @@ public class Checkpoint3_2 : Checkpoint
             if (wheelType == "BackWheel")
             {
                 Debug.Log($"{name} correctly hit by BackWheel.");
-                rootManager.ReportCheckpoint3PartHit(false, true); // isPart1 = false, byCorrectWheel = true
+                rootManager.ReportCheckpoint3PartHit(false, true);
             }
-            // No penalty for front wheel.
         }
     }
 }
