@@ -26,8 +26,6 @@ packaging==25.0
 pettingzoo==1.15.0
 pillow==11.2.1
 protobuf==3.20.3
-pypiwin32==223
-pywin32==310
 pyyaml==6.0.2
 requests==2.32.3
 setuptools==80.8.0
