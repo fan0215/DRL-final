@@ -9772,30 +9772,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d4754201af3e0162d9e2ef1bd1fa4879, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1511127909}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d4754201af3e0162d9e2ef1bd1fa4879, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1511127918}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d4754201af3e0162d9e2ef1bd1fa4879, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1511127911}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d4754201af3e0162d9e2ef1bd1fa4879, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1511127917}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d4754201af3e0162d9e2ef1bd1fa4879, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1511127916}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d4754201af3e0162d9e2ef1bd1fa4879, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1511127915}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d4754201af3e0162d9e2ef1bd1fa4879, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1511127914}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d4754201af3e0162d9e2ef1bd1fa4879, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1511127913}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d4754201af3e0162d9e2ef1bd1fa4879, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1511127912}
     - targetCorrespondingSourceObject: {fileID: 8164078558771037576, guid: d4754201af3e0162d9e2ef1bd1fa4879, type: 3}
       insertIndex: -1
       addedObject: {fileID: 974764587}
@@ -20994,6 +20970,7 @@ MonoBehaviour:
   motorForce: 3000
   maxSteeringAngle: 30
   activeBrakeForce: 5000
+  idleBrakeForce: 0
   stopVelocityThreshold: 0.1
   checkpointSpawnPoints:
   - {fileID: 909875842}
@@ -21008,8 +20985,6 @@ MonoBehaviour:
   - {fileID: 1983021118}
   - {fileID: 983890083}
   - {fileID: 943252761}
-  torquePower: 3000
-  brakeForce: 5000
 --- !u!54 &1511127910
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -21037,177 +21012,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &1511127911
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1511127907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5155c11d031d4ca0f8f4cfbef64d1bd4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  agentParameters:
-    maxStep: 0
-  hasUpgradedFromAgentParameters: 1
-  MaxStep: 0
-  carController: {fileID: 1511127909}
-  rootCheckpointManager: {fileID: 2043192188}
-  crashPenalty: -1
-  stageClearedReward: 5
---- !u!114 &1511127912
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1511127907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3a5c9d521e5ef4759a8246a07d52221e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DecisionPeriod: 5
-  DecisionStep: 0
-  TakeActionsBetweenDecisions: 1
---- !u!114 &1511127913
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1511127907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 282f342c2ab144bf38be65d4d0c4e07d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Camera: {fileID: 196644485}
-  m_SensorName: RightMirrorCamera
-  m_Width: 84
-  m_Height: 84
-  m_Grayscale: 1
-  m_ObservationType: 0
-  m_RuntimeCameraEnable: 0
-  m_ObservationStacks: 1
-  m_Compression: 1
---- !u!114 &1511127914
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1511127907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 282f342c2ab144bf38be65d4d0c4e07d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Camera: {fileID: 1040395447}
-  m_SensorName: LeftMirrorCamera
-  m_Width: 84
-  m_Height: 84
-  m_Grayscale: 1
-  m_ObservationType: 0
-  m_RuntimeCameraEnable: 0
-  m_ObservationStacks: 1
-  m_Compression: 1
---- !u!114 &1511127915
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1511127907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 282f342c2ab144bf38be65d4d0c4e07d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Camera: {fileID: 1039620958}
-  m_SensorName: RightViewCamera
-  m_Width: 84
-  m_Height: 84
-  m_Grayscale: 1
-  m_ObservationType: 0
-  m_RuntimeCameraEnable: 0
-  m_ObservationStacks: 1
-  m_Compression: 1
---- !u!114 &1511127916
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1511127907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 282f342c2ab144bf38be65d4d0c4e07d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Camera: {fileID: 651013400}
-  m_SensorName: LeftViewSensor
-  m_Width: 84
-  m_Height: 84
-  m_Grayscale: 1
-  m_ObservationType: 0
-  m_RuntimeCameraEnable: 0
-  m_ObservationStacks: 1
-  m_Compression: 1
---- !u!114 &1511127917
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1511127907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 282f342c2ab144bf38be65d4d0c4e07d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Camera: {fileID: 2083856235}
-  m_SensorName: FrontViewSensor
-  m_Width: 84
-  m_Height: 84
-  m_Grayscale: 1
-  m_ObservationType: 0
-  m_RuntimeCameraEnable: 0
-  m_ObservationStacks: 1
-  m_Compression: 1
---- !u!114 &1511127918
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1511127907}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5d1c4e0b1822b495aa52bc52839ecb30, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_BrainParameters:
-    VectorObservationSize: 6
-    NumStackedVectorObservations: 1
-    m_ActionSpec:
-      m_NumContinuousActions: 3
-      BranchSizes: 
-    VectorActionSize: 03000000
-    VectorActionDescriptions: []
-    VectorActionSpaceType: 1
-    hasUpgradedBrainParametersWithActionSpec: 1
-  m_Model: {fileID: 0}
-  m_InferenceDevice: 0
-  m_BehaviorType: 0
-  m_BehaviorName: My Behavior
-  TeamId: 0
-  m_UseChildSensors: 1
-  m_UseChildActuators: 1
-  m_DeterministicInference: 0
-  m_ObservableAttributeHandling: 0
 --- !u!1 &1561650999
 GameObject:
   m_ObjectHideFlags: 0
@@ -26289,7 +26093,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   car: {fileID: 1511127909}
-  carAgent: {fileID: 1511127911}
   allCheckpoints:
   - {fileID: 818850909}
   - {fileID: 42924752}
@@ -26307,7 +26110,6 @@ MonoBehaviour:
   - {fileID: 472855807}
   - {fileID: 2001975972}
   initialCheckpoint: {fileID: 818850909}
-  resetPositionOnCrashDuringTraining: 1
   checkpoint1_Ref: {fileID: 818850909}
   checkpoint2_1_Ref: {fileID: 42924752}
   checkpoint2_2_Ref: {fileID: 1351839118}

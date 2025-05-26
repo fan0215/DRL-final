@@ -18,6 +18,7 @@ public class Checkpoint8_2 : Checkpoint
             if (rootManager.IsLevelCrossingLight8Active()) // Check if the light is STILL SHINING
             {
                 Debug.Log($"{name} (CP8-2) touched by FrontWheel, but Level Crossing Light is STILL ACTIVE. Looping back to CP8-1.");
+                rootManager.HandleCrash();
                 rootManager.LoopBackToCheckpoint8_1(); // Tell RootManager to handle the loop back
                                                       // This will deactivate CP8-2 and activate CP8-1.
             }

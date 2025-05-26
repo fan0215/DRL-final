@@ -39,6 +39,7 @@ public class Checkpoint7_2 : Checkpoint
             else // Touched by FrontWheel but cp7_2_canBePassedAfterStop is false
             {
                 Debug.Log($"{name} (CP7-2) - Touched by FrontWheel TOO EARLY (stop condition not met). Looping back to CP7-1.");
+                rootManager.HandleCrash();
                 rootManager.LoopBackToCheckpoint7_1(); // This method will deactivate this checkpoint (7-2)
             }
         }
