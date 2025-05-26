@@ -109,7 +109,7 @@ public class CarController : MonoBehaviour
     // Called by CarAgent.cs
     public void SetAgentInputs(float accelerator, float brake, float steer)
     {
-        currentAcceleratorInput = Mathf.Clamp01(accelerator);
+        currentAcceleratorInput = Mathf.Clamp(accelerator, -1f, 1f);
         currentBrakeInput = Mathf.Clamp01(brake);
         currentSteerInput = Mathf.Clamp(steer, -1f, 1f);
     }
@@ -123,7 +123,7 @@ public class CarController : MonoBehaviour
 
     void ApplyAgentDriveAndBrake()
     {
-        // Accelerator input (0 to 1)
+        // Accelerator input (-1 to 1)
         float motorTorque = currentAcceleratorInput * motorForce;
 
         // Brake input (0 to 1)
@@ -133,7 +133,7 @@ public class CarController : MonoBehaviour
         // If braking significantly, reduce motor torque (optional, but common)
         if (currentBrakeInput > 0.1f)
         {
-            motorTorque *= (1f - currentBrakeInput * 0.8f); // Reduce motor if braking
+            motorTorque *= 0; // Reduce motor if braking
         }
 
         // Apply motor torque (only forward, no reverse with current action space)
