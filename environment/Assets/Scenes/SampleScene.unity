@@ -9781,6 +9781,21 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d4754201af3e0162d9e2ef1bd1fa4879, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1511127913}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d4754201af3e0162d9e2ef1bd1fa4879, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1511127918}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d4754201af3e0162d9e2ef1bd1fa4879, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1511127917}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d4754201af3e0162d9e2ef1bd1fa4879, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1511127916}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d4754201af3e0162d9e2ef1bd1fa4879, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1511127915}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d4754201af3e0162d9e2ef1bd1fa4879, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1511127914}
     - targetCorrespondingSourceObject: {fileID: 8164078558771037576, guid: d4754201af3e0162d9e2ef1bd1fa4879, type: 3}
       insertIndex: -1
       addedObject: {fileID: 974764587}
@@ -21056,7 +21071,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_BrainParameters:
-    VectorObservationSize: 0
+    VectorObservationSize: 6
     NumStackedVectorObservations: 1
     m_ActionSpec:
       m_NumContinuousActions: 3
@@ -21067,7 +21082,7 @@ MonoBehaviour:
     hasUpgradedBrainParametersWithActionSpec: 1
   m_Model: {fileID: 0}
   m_InferenceDevice: 0
-  m_BehaviorType: 1
+  m_BehaviorType: 0
   m_BehaviorName: My Behavior
   TeamId: 0
   m_UseChildSensors: 1
@@ -21089,6 +21104,111 @@ MonoBehaviour:
   DecisionPeriod: 5
   DecisionStep: 0
   TakeActionsBetweenDecisions: 1
+--- !u!114 &1511127914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511127907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 282f342c2ab144bf38be65d4d0c4e07d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Camera: {fileID: 1040395447}
+  m_SensorName: cameraLeftMirror
+  m_Width: 84
+  m_Height: 84
+  m_Grayscale: 1
+  m_ObservationType: 0
+  m_RuntimeCameraEnable: 0
+  m_ObservationStacks: 1
+  m_Compression: 1
+--- !u!114 &1511127915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511127907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 282f342c2ab144bf38be65d4d0c4e07d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Camera: {fileID: 196644485}
+  m_SensorName: cameraRightMirror
+  m_Width: 84
+  m_Height: 84
+  m_Grayscale: 1
+  m_ObservationType: 0
+  m_RuntimeCameraEnable: 0
+  m_ObservationStacks: 1
+  m_Compression: 1
+--- !u!114 &1511127916
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511127907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 282f342c2ab144bf38be65d4d0c4e07d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Camera: {fileID: 651013400}
+  m_SensorName: cameraLeft
+  m_Width: 84
+  m_Height: 84
+  m_Grayscale: 1
+  m_ObservationType: 0
+  m_RuntimeCameraEnable: 0
+  m_ObservationStacks: 1
+  m_Compression: 1
+--- !u!114 &1511127917
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511127907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 282f342c2ab144bf38be65d4d0c4e07d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Camera: {fileID: 1039620958}
+  m_SensorName: cameraRight
+  m_Width: 84
+  m_Height: 84
+  m_Grayscale: 1
+  m_ObservationType: 0
+  m_RuntimeCameraEnable: 0
+  m_ObservationStacks: 1
+  m_Compression: 1
+--- !u!114 &1511127918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1511127907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 282f342c2ab144bf38be65d4d0c4e07d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Camera: {fileID: 2083856235}
+  m_SensorName: cameraFront
+  m_Width: 84
+  m_Height: 84
+  m_Grayscale: 1
+  m_ObservationType: 0
+  m_RuntimeCameraEnable: 0
+  m_ObservationStacks: 1
+  m_Compression: 1
 --- !u!1 &1561650999
 GameObject:
   m_ObjectHideFlags: 0

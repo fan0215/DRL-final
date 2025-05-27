@@ -52,8 +52,6 @@ public class CarAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
-        return; // pass
-
         if (carController == null || carController.rb == null || rootCheckpointManager == null)
         {
             Debug.LogWarning("Agent: Missing critical references (CarController, Rigidbody, or RootCheckpointManager) for observation. Sending default/zero observations.");
