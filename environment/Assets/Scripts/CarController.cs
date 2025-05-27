@@ -1,11 +1,11 @@
 using UnityEngine;
-using System.Collections.Generic; // Required for List
+using System.Collections.Generic;
 
 public class CarController : MonoBehaviour
 {
     [Header("References")]
-    public RootCheckpointManager rootCheckpointManager; // Assign in Inspector
-    public Rigidbody rb; 
+    public RootCheckpointManager rootCheckpointManager;
+    public Rigidbody rb;
 
     [Header("Wheel Colliders (Assign from Hierarchy)")]
     public WheelCollider wheelBackLeft;
@@ -18,50 +18,41 @@ public class CarController : MonoBehaviour
     public Transform wheelFR_Transform;
     public Transform wheelBL_Transform;
     public Transform wheelBR_Transform;
-    // IMPORTANT: Set this in Inspector to Quaternion.Euler(0, 0, 90) for your cylinder wheels
     public Quaternion wheelVisualsRotationOffset = Quaternion.Euler(0, 0, 90);
 
     [Header("Car Driving Parameters (Logic from your CarPhysics script)")]
     [Tooltip("How strong acceleration is. Corresponds to 'torquePower'.")]
     public float motorForce = 3000f;
     [Tooltip("Steering angle for front wheels.")]
-    public float maxSteeringAngle = 50f;
+    public float maxSteeringAngle = 60f;
     [Tooltip("Force applied to rear wheels when braking (Spacebar). Corresponds to 'brakeForce'.")]
     public float activeBrakeForce = 5000f;
-    // Note: idleBrakeForce is intentionally omitted from driving logic to match your CarPhysics.cs
+    [Tooltip("This variable is present for consistency but NOT USED by the current driving logic (set to 0).")]
+    public float idleBrakeForce = 0f;
 
     [Header("Car State Properties (for Checkpoint System)")]
     [Tooltip("Velocity magnitude below which the car is considered stopped.")]
     public float stopVelocityThreshold = 0.1f;
-    // CenterOfMassOffset and its application are removed as per your request.
 
     [Header("Checkpoint Spawn Points")]
     [Tooltip("Assign empty GameObjects representing spawn positions and rotations for each checkpoint/stage.")]
-    public List<Transform> checkpointSpawnPoints = new List<Transform>(); // Assign these in Inspector
+    public List<Transform> checkpointSpawnPoints = new List<Transform>();
 
-    // Inputs set by Agent
-    private float currentAcceleratorInput = 0f; // 0 to 1
-    private float currentBrakeInput = 0f;       // 0 to 1
-    private float currentSteerInput = 0f;       // -1 to 1
-
-    // // Private variables to store calculated torque and steer, mirroring CarPhysics.cs
     private float currentCalculatedTorque = 0f;
     private float currentCalculatedSteerAngle = 0f;
-    // isActiveBraking (from input) will be used directly
+    private bool previousFrameBrakingStatusForLog = false; // For logging brake changes
 
-    public float torquePower = 1500f; // How strong acceleration is
-    public float brakeForce = 3000f; // Force applied when braking
-
-    private float currentTorque = 0f;
-    private float currentSteer = 0f;
+    private float currentAcceleratorInput = 0f; // -1 to 1
+    private float currentBrakeInput = 0f;       //  0 to 1
+    private float currentSteerInput = 0f;       // -1 to 1
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         if (rb == null)
         {
-            Debug.LogError("CarController requires a Rigidbody component on the same GameObject.", this);
-            enabled = false; // Disable script if no Rigidbody
+            Debug.LogError("CarController requires a Rigidbody component.", this);
+            enabled = false;
             return;
         }
 
@@ -69,14 +60,12 @@ public class CarController : MonoBehaviour
         {
             rootCheckpointManager = FindObjectOfType<RootCheckpointManager>();
             if (rootCheckpointManager == null)
-            {
-                Debug.LogWarning("CarController: RootCheckpointManager not found in the scene. Crash handling for 'Edge' collisions will not work.", this);
-            }
+                Debug.LogWarning("CarController: RootCheckpointManager not found. Crash handling will not work.", this);
         }
 
         if (wheelFrontLeft == null || wheelFrontRight == null || wheelBackLeft == null || wheelBackRight == null)
         {
-            Debug.LogError("One or more WheelColliders are not assigned in the CarController Inspector! Please assign all four.", this);
+            Debug.LogError("One or more WheelColliders are not assigned in the CarController Inspector!", this);
             enabled = false;
         }
 
@@ -85,23 +74,6 @@ public class CarController : MonoBehaviour
 
     void FixedUpdate()
     {
-        // human driving
-        // // Get input values
-        // float move = Input.GetAxis("Vertical"); // Up/Down arrow or W/S
-        // float steer = Input.GetAxis("Horizontal"); // Left/Right arrow or A/D
-        // bool isBraking = Input.GetKey(KeyCode.Space); // Spacebar for brakes
-
-        // // Apply torque to back wheels
-        // currentTorque = move * torquePower;
-
-        // // Apply steering to front wheels
-        // currentSteer = steer * maxSteeringAngle;
-
-        // // Apply forces to wheels
-        // ApplyTorque();
-        // ApplySteering();
-        // ApplyBrakes(isBraking);
-
         ApplyAgentSteering();
         ApplyAgentDriveAndBrake();
     }
@@ -123,65 +95,40 @@ public class CarController : MonoBehaviour
 
     void ApplyAgentDriveAndBrake()
     {
-        // Accelerator input (-1 to 1)
         float motorTorque = currentAcceleratorInput * motorForce;
-
-        // Brake input (0 to 1)
-        // Apply brake to all wheels for effective stopping by agent.
         float brakeTorque = currentBrakeInput * activeBrakeForce;
 
-        // If braking significantly, reduce motor torque (optional, but common)
+        // If braking significantly, reduce motor torque
         if (currentBrakeInput > 0.1f)
         {
-            motorTorque *= 0; // Reduce motor if braking
+            motorTorque *= (1.0f - currentBrakeInput);
         }
 
-        // Apply motor torque (only forward, no reverse with current action space)
         if (wheelBackLeft != null) wheelBackLeft.motorTorque = motorTorque;
         if (wheelBackRight != null) wheelBackRight.motorTorque = motorTorque;
 
-        // Apply brake torque to all wheels
         if (wheelFrontLeft != null) wheelFrontLeft.brakeTorque = brakeTorque;
         if (wheelFrontRight != null) wheelFrontRight.brakeTorque = brakeTorque;
         if (wheelBackLeft != null) wheelBackLeft.brakeTorque = brakeTorque;
         if (wheelBackRight != null) wheelBackRight.brakeTorque = brakeTorque;
     }
 
-    public float GetCurrentSteerAngle() // For agent observation
+    public float GetCurrentSteerAngle()
     {
         if (wheelFrontLeft != null)
         {
-            return wheelFrontLeft.steerAngle; // Actual current steer angle
+            return wheelFrontLeft.steerAngle;
         }
         return 0f;
     }
 
-    void ApplyTorque()
-    {
-        wheelBackLeft.motorTorque = currentTorque;
-        wheelBackRight.motorTorque = currentTorque;
-    }
-
-    void ApplySteering()
-    {
-        wheelFrontLeft.steerAngle = currentSteer;
-        wheelFrontRight.steerAngle = currentSteer;
-    }
-
-    void ApplyBrakes(bool isBraking)
-    {
-        float brake = isBraking ? activeBrakeForce : 0f;
-        wheelBackLeft.brakeTorque = brake;
-        wheelBackRight.brakeTorque = brake;
-    }
-
     void OnCollisionEnter(Collision collision)
     {
+        if (rootCheckpointManager == null) return;
         if (collision.gameObject.CompareTag("Edge"))
         {
-            Debug.Log("Car collided with an Edge.");
-            if (rootCheckpointManager != null) rootCheckpointManager.HandleCrash();
-            else Debug.LogError("RootCheckpointManager not found by CarController for crash handling.");
+            Debug.Log("Car collided with an Edge. Notifying RootCheckpointManager.");
+            rootCheckpointManager.HandleCrash();
         }
     }
 
@@ -190,65 +137,62 @@ public class CarController : MonoBehaviour
         if (rb == null) return true;
         bool wheelsPhysicallyStopped = true;
         WheelCollider[] currentActiveWheels = { wheelFrontLeft, wheelFrontRight, wheelBackLeft, wheelBackRight };
-        foreach (WheelCollider wc_check in currentActiveWheels) // Renamed wc to wc_check to avoid conflict with UpdateSingleWheel parameter if copy-pasted into same scope by mistake
+        foreach (WheelCollider wc_check in currentActiveWheels)
         {
-            if (wc_check != null) wheelsPhysicallyStopped &= (Mathf.Abs(wc_check.rpm) < 5);
+            if (wc_check != null) wheelsPhysicallyStopped &= (Mathf.Abs(wc_check.rpm) < 10);
             else { wheelsPhysicallyStopped = false; break; }
         }
-        return rb.linearVelocity.magnitude < stopVelocityThreshold &&
-               rb.angularVelocity.magnitude < stopVelocityThreshold &&
-               wheelsPhysicallyStopped;
+        return rb.linearVelocity.magnitude < stopVelocityThreshold && rb.angularVelocity.magnitude < stopVelocityThreshold && wheelsPhysicallyStopped;
     }
+
+    private float _lastResetTime = -10f; // For debug logging after reset
 
     public void ResetState(int spawnPointIndex)
     {
+        _lastResetTime = Time.time; // Track reset time for debugging
+        Debug.Log($"--- CarController.ResetState called with spawnPointIndex: {spawnPointIndex} at Time: {Time.time} ---");
+
         if (checkpointSpawnPoints == null || checkpointSpawnPoints.Count == 0)
         {
-            Debug.LogError("CarController: 'Checkpoint Spawn Points' list is not set up or is empty! Cannot reset state.", this);
+            Debug.LogError("CarController: 'Checkpoint Spawn Points' list is not set up or is empty!", this);
             return;
         }
         if (spawnPointIndex < 0 || spawnPointIndex >= checkpointSpawnPoints.Count || checkpointSpawnPoints[spawnPointIndex] == null)
         {
-            Debug.LogError($"CarController: Invalid spawnPointIndex '{spawnPointIndex}' or the spawn point Transform at that index is null. Cannot reset state. Checking for fallback to index 0.", this);
-            if (checkpointSpawnPoints.Count > 0 && checkpointSpawnPoints[0] != null)
-            {
-                spawnPointIndex = 0; // Fallback to the first defined spawn point if valid
-                Debug.LogWarning($"CarController: Using fallback spawn point index 0.", this);
-            }
-            else
-            {
-                Debug.LogError("CarController: No valid spawn points available, including fallback index 0. Reset cannot proceed.", this);
-                return; // Cannot proceed if no valid spawn points at all
-            }
+            Debug.LogError($"CarController: Invalid spawnPointIndex '{spawnPointIndex}' or spawn point Transform is null. Attempting fallback to 0.", this);
+            if (checkpointSpawnPoints.Count > 0 && checkpointSpawnPoints[0] != null) spawnPointIndex = 0;
+            else { Debug.LogError("CarController: No valid spawn points available for fallback.", this); return; }
         }
 
         Transform selectedSpawnPoint = checkpointSpawnPoints[spawnPointIndex];
         transform.position = selectedSpawnPoint.position;
         transform.rotation = selectedSpawnPoint.rotation;
+        Debug.Log($"Car position set to: {transform.position}, rotation set to: {transform.rotation.eulerAngles}");
+
 
         if (rb != null)
         {
             rb.linearVelocity = Vector3.zero;
             rb.angularVelocity = Vector3.zero;
+            Debug.Log("Rigidbody velocities zeroed.");
         }
 
-        // Reset internal calculation states used by driving logic
+        WheelCollider[] allWheels = { wheelFrontLeft, wheelFrontRight, wheelBackLeft, wheelBackRight };
+        foreach (WheelCollider wc in allWheels)
+        {
+            if (wc != null)
+            {
+                wc.motorTorque = 0f; // Stop any active motor torque
+                wc.brakeTorque = Mathf.Infinity; // Apply infinite brake force to stop instantly
+                wc.steerAngle = 0f; // Reset steering angle as well
+            }
+        }
+        Debug.Log("WheelColliders' motor torque, brake torque, and steer angle reset.");
+
         currentCalculatedTorque = 0f;
         currentCalculatedSteerAngle = 0f;
+        Debug.Log("Internal calculated torque/steer reset to 0.");
 
-        // Reset WheelCollider states
-        // WheelCollider[] allWheels = { wheelFrontLeft, wheelFrontRight, wheelBackLeft, wheelBackRight };
-        // foreach (WheelCollider wc_reset in allWheels)
-        // {
-        //     if (wc_reset != null)
-        //     {
-        //         wc_reset.motorTorque = 0;
-        //         // Apply activeBrakeForce to all wheels on reset to ensure it stops quickly.
-        //         // This is a common practice for reset, even if driving logic brakes rear only.
-        //         wc_reset.brakeTorque = activeBrakeForce;
-        //         wc_reset.steerAngle = 0;
-        //     }
-        // }
-        Debug.Log($"Car has been reset to spawn point index: {spawnPointIndex} (Name: {selectedSpawnPoint.name})");
+        Debug.Log($"Car has been reset. Next Update frame will read fresh inputs.");
     }
 }

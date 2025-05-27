@@ -2,8 +2,6 @@ using UnityEngine;
 
 public class Checkpoint7_2 : Checkpoint
 {
-    // nextCheckpoint_A in inspector should be Checkpoint8-1
-
     public override void ActivateCheckpoint()
     {
         base.ActivateCheckpoint();
@@ -17,15 +15,12 @@ public class Checkpoint7_2 : Checkpoint
     {
         if (!isActive) return;
 
-        if (wheelType == "FrontWheel") // Assuming FrontWheel is the trigger for pass/fail
+        if (wheelType == "FrontWheel")
         {
             if (rootManager.cp7_2_canBePassedAfterStop)
             {
                 Debug.Log($"{name} (CP7-2) - PASSED by FrontWheel (car had stopped for 1s). Activating CP8-1.");
                 DeactivateCheckpoint(); // Deactivate self
-                
-                // REMOVED: rootManager.ResetCP7_2State(); 
-                // The state reset will happen as part of AdvanceToSegment -> DefineSegmentStart
 
                 if (nextCheckpoint_A != null) // Should be CP8-1
                 {
@@ -39,6 +34,7 @@ public class Checkpoint7_2 : Checkpoint
             else // Touched by FrontWheel but cp7_2_canBePassedAfterStop is false
             {
                 Debug.Log($"{name} (CP7-2) - Touched by FrontWheel TOO EARLY (stop condition not met). Looping back to CP7-1.");
+                rootManager.HandleCrash();
                 rootManager.LoopBackToCheckpoint7_1(); // This method will deactivate this checkpoint (7-2)
             }
         }

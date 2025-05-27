@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class Checkpoint4_1 : Checkpoint
 {
-    // In Inspector, assign Checkpoint4-2 to 'nextCheckpoint_A'
     protected override void HandleCollisionLogic(string wheelType, CarController car)
     {
         if (wheelType == "FrontWheel")
