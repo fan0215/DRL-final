@@ -20,9 +20,6 @@ public class CarAgent : Agent
     [Tooltip("Episodic trainin or non Episodic")]
     public bool episodic_train = true;
 
-    // Internal state for reward logic and observations
-    private Checkpoint _lastClearedCheckpointForReward = null;
-
     public override void Initialize()
     {
         if (carController == null) carController = GetComponent<CarController>();
@@ -35,7 +32,6 @@ public class CarAgent : Agent
     public override void OnEpisodeBegin()
     {
         Debug.Log($"Agent: New Episode Beginning (Step: {StepCount}).");
-        _lastClearedCheckpointForReward = null;
 
         if (rootCheckpointManager != null)
         {
@@ -56,6 +52,8 @@ public class CarAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
+        return; // pass
+
         if (carController == null || carController.rb == null || rootCheckpointManager == null)
         {
             Debug.LogWarning("Agent: Missing critical references (CarController, Rigidbody, or RootCheckpointManager) for observation. Sending default/zero observations.");
@@ -137,23 +135,9 @@ public class CarAgent : Agent
     }
 
     // Method called by RootCheckpointManager when a checkpoint stage is cleared
-    public void AgentClearedStage(Checkpoint clearedCheckpoint)
+    public void AgentClearedStage()
     {
-        if (clearedCheckpoint == null)
-        {
-            Debug.LogWarning("AgentClearedStage called with null checkpoint.");
-            return;
-        }
-
-        // Prevent giving rewards multiple times for the same checkpoint if this method is called
-        // again before the agent has meaningfully progressed to a new state.
-        if (_lastClearedCheckpointForReward == clearedCheckpoint)
-        {
-            return;
-        }
-        _lastClearedCheckpointForReward = clearedCheckpoint;
-
         AddReward(stageClearedReward);
-        Debug.Log($"Agent: Stage Cleared ({clearedCheckpoint.name}). Reward: {stageClearedReward}");
+        Debug.Log($"Agent: Stage Cleared. Reward: {stageClearedReward}");
     }
 }

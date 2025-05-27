@@ -55,7 +55,6 @@ public class CarController : MonoBehaviour
             enabled = false;
             return;
         }
-        // Center of Mass adjustment REMOVED as per your request.
 
         if (rootCheckpointManager == null)
         {
@@ -75,7 +74,8 @@ public class CarController : MonoBehaviour
 
     void FixedUpdate()
     {
-        // pass
+        ApplyAgentSteering();
+        ApplyAgentDriveAndBrake();
     }
 
     // Called by CarAgent.cs
@@ -121,20 +121,6 @@ public class CarController : MonoBehaviour
         }
         return 0f;
     }
-
-    // void Update()
-    // {
-    //     float moveInput = Input.GetAxis("Vertical");
-    //     float steerInput = Input.GetAxis("Horizontal");
-    //     bool isSpacebarBraking = Input.GetKey(KeyCode.Space);
-
-    //     currentCalculatedTorque = moveInput * motorForce;
-    //     currentCalculatedSteerAngle = steerInput * maxSteeringAngle;
-
-    //     ApplyMotorToWheels();
-    //     ApplySteeringToWheels();
-    //     ApplyBrakesToWheels(isSpacebarBraking);
-    // }
 
     void OnCollisionEnter(Collision collision)
     {
@@ -190,6 +176,18 @@ public class CarController : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
             Debug.Log("Rigidbody velocities zeroed.");
         }
+
+        WheelCollider[] allWheels = { wheelFrontLeft, wheelFrontRight, wheelBackLeft, wheelBackRight };
+        foreach (WheelCollider wc in allWheels)
+        {
+            if (wc != null)
+            {
+                wc.motorTorque = 0f; // Stop any active motor torque
+                wc.brakeTorque = Mathf.Infinity; // Apply infinite brake force to stop instantly
+                wc.steerAngle = 0f; // Reset steering angle as well
+            }
+        }
+        Debug.Log("WheelColliders' motor torque, brake torque, and steer angle reset.");
 
         currentCalculatedTorque = 0f;
         currentCalculatedSteerAngle = 0f;

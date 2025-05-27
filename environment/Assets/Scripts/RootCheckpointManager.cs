@@ -4,7 +4,9 @@ using System.Linq;
 
 public class RootCheckpointManager : MonoBehaviour
 {
+    [Header("Core References")]
     public CarController car;
+    public CarAgent carAgent;
     public List<Checkpoint> allCheckpoints = new List<Checkpoint>();
     public Checkpoint initialCheckpoint;
 
@@ -25,9 +27,8 @@ public class RootCheckpointManager : MonoBehaviour
     public Checkpoint checkpoint7_2_Ref;
     public Checkpoint checkpoint8_1_Ref;
     public Checkpoint checkpoint8_2_Ref;
-    public Checkpoint checkpoint9_Ref; // <-- NEW REFERENCE
+    public Checkpoint checkpoint9_Ref;
 
-    // ... (savedCarPosition, savedCarRotation, _currentMainSavedCheckpoint, _currentConcurrentSavedCheckpoints remain as per last version for spawn index logic) ...
     private Checkpoint _currentMainSavedCheckpoint;
     private List<Checkpoint> _currentConcurrentSavedCheckpoints = new List<Checkpoint>();
 
@@ -58,7 +59,10 @@ public class RootCheckpointManager : MonoBehaviour
     void Start()
     {
         if (car == null) car = FindObjectOfType<CarController>();
+        if (carAgent == null && car != null) carAgent = car.GetComponent<CarAgent>();
+
         if (car == null) Debug.LogError("CarController not found by RootCheckpointManager. Car interactions will fail.");
+        if (carAgent == null) Debug.LogWarning("CarAgent not found/assigned. ML-Agent features (rewards, penalties, episode ends) will be disabled.");
 
         PopulateAllCheckpointsIfNeeded();
 
@@ -68,6 +72,7 @@ public class RootCheckpointManager : MonoBehaviour
         }
 
         Checkpoint effectiveStartingCheckpoint = initialCheckpoint;
+
         if (effectiveStartingCheckpoint == null && checkpoint1_Ref != null)
         {
             Debug.LogWarning("InitialCheckpoint was not assigned in RootCheckpointManager. Using 'checkpoint1_Ref' as the starting checkpoint.");
@@ -76,7 +81,7 @@ public class RootCheckpointManager : MonoBehaviour
 
         if (effectiveStartingCheckpoint != null)
         {
-            DefineSegmentStart(effectiveStartingCheckpoint);
+            DefineSegmentStart(effectiveStartingCheckpoint, false);
         }
         else
         {
@@ -97,7 +102,7 @@ public class RootCheckpointManager : MonoBehaviour
             checkpoint4_1_Ref, checkpoint4_2_Ref, checkpoint5_1_Ref, checkpoint5_2_Ref,
             checkpoint6_0_Ref, checkpoint6_1_Ref, checkpoint6_2_Ref,
             checkpoint7_1_Ref, checkpoint7_2_Ref, checkpoint8_1_Ref, checkpoint8_2_Ref,
-            checkpoint9_Ref // <-- ADDED CP9 Ref
+            checkpoint9_Ref
         };
         foreach (var sRef in specificRefs)
         {
@@ -108,8 +113,13 @@ public class RootCheckpointManager : MonoBehaviour
         }
     }
 
-    public void DefineSegmentStart(Checkpoint mainCheckpoint, params Checkpoint[] concurrentCheckpoints)
+    public void DefineSegmentStart(Checkpoint mainCheckpoint, bool give_reward, params Checkpoint[] concurrentCheckpoints)
     {
+        if (carAgent != null && give_reward)
+        {
+            carAgent.AgentClearedStage(); // Apply reward
+        }
+
         if (car == null) { Debug.LogError("Car reference not set in RootCheckpointManager! Cannot define segment start."); return; }
         if (mainCheckpoint == null) { Debug.LogError("MainCheckpoint for DefineSegmentStart is null! Cannot define segment."); return; }
 
@@ -130,21 +140,32 @@ public class RootCheckpointManager : MonoBehaviour
         {
             if (cp != null) cp.ActivateCheckpoint();
         }
+
+        // special case
+        if (mainCheckpoint == checkpoint3_1_Ref)
+            checkpoint3_2_Ref.ActivateCheckpoint();
+        else if (mainCheckpoint == checkpoint3_2_Ref)
+            checkpoint3_1_Ref.ActivateCheckpoint();
+
         Debug.Log($"Segment defined. Main CP for reset: {mainCheckpoint?.name} (will use its spawnPointIndex: {mainCheckpoint?.spawnPointIndex}).");
     }
 
-    public void AdvanceToSegment(Checkpoint nextMainCheckpoint, params Checkpoint[] nextConcurrentCheckpoints)
+    public void AdvanceToSegment(Checkpoint nextMainCheckpoint, params Checkpoint[] nextConcurrentCheckpoints) // Overload when currentlyPassedCheckpoint is null
     {
         if (nextMainCheckpoint == null) { Debug.LogError("AdvanceToSegment called with a null nextMainCheckpoint.", this); return; }
-        Debug.Log($"Advancing to segment. Next Main: {nextMainCheckpoint?.name}");
-        DefineSegmentStart(nextMainCheckpoint, nextConcurrentCheckpoints);
+        Debug.Log($"Advancing to Next Main: {nextMainCheckpoint?.name}");
+        DefineSegmentStart(nextMainCheckpoint, true, nextConcurrentCheckpoints);
     }
 
     public void HandleCrash()
     {
         Debug.Log("CRASH DETECTED! Resetting car and checkpoint states.");
 
-        // --- NEW: Deactivate Level Crossing Light for CP8 upon any crash ---
+        if (carAgent != null)
+        {
+            carAgent.AgentCrashed();
+        }
+
         if (levelCrossingLightForCP8 != null)
         {
             if (levelCrossingLightForCP8.isLightActive) // Optional: Check if it's even active before trying to deactivate
@@ -153,19 +174,14 @@ public class RootCheckpointManager : MonoBehaviour
             }
             levelCrossingLightForCP8.SetLightActive(false); // Call this regardless to ensure it stops and resets
         }
-        // --- END NEW ---
 
-        if (car == null) 
+        if (car == null)
         {
-            Debug.LogError("Car reference null in HandleCrash. Cannot reset car.", this); 
-            // If car is null, we might still want to reactivate the segment and reset states if possible,
-            // but car reset won't happen. For now, let's assume car reference should always be valid here.
-            // If not, the rest of the logic might also have issues.
-            // return; // Early exit if car is null might be too drastic, depends on desired recovery.
+            Debug.LogError("Car reference null in HandleCrash. Cannot reset car.", this);
         }
-        
+
         // Reset car position using spawnPointIndex from the checkpoint that started the current segment
-        if (_currentMainSavedCheckpoint != null && car != null) // Ensure car ref is also checked here
+        if (_currentMainSavedCheckpoint != null && car != null)
         {
             Debug.Log($"Resetting car to spawn index: {_currentMainSavedCheckpoint.spawnPointIndex} (from checkpoint: {_currentMainSavedCheckpoint.name})");
             car.ResetState(_currentMainSavedCheckpoint.spawnPointIndex);
@@ -175,16 +191,16 @@ public class RootCheckpointManager : MonoBehaviour
             // Fallback if _currentMainSavedCheckpoint is null (e.g., crash before first segment fully defined)
             Debug.LogError("Cannot HandleCrash properly: _currentMainSavedCheckpoint is null. Attempting fallback reset.", this);
             Checkpoint fallbackResetCp = initialCheckpoint ?? checkpoint1_Ref; // Use initial, or CP1 as a last resort
-            if (fallbackResetCp != null && car != null) 
+            if (fallbackResetCp != null && car != null)
             {
                 Debug.LogWarning($"Attempting fallback reset to spawn index of: {fallbackResetCp.name} (Index: {fallbackResetCp.spawnPointIndex})");
                 car.ResetState(fallbackResetCp.spawnPointIndex);
-            } 
+            }
             else if (car == null)
             {
                 Debug.LogError("Car reference is null, cannot perform even fallback car position reset.");
             }
-            else 
+            else
             {
                 Debug.LogError("No fallback checkpoint available for crash reset. Car position not reset by HandleCrash.");
             }
@@ -201,7 +217,7 @@ public class RootCheckpointManager : MonoBehaviour
         checkpoint3_2_hitByCorrectWheel = false;
         ResetCP6StateAndLight();
         ResetCP7_2State();
-        Debug.Log("Internal states (CP3, CP6, CP7-2) reset for new segment.");
+        // Debug.Log("Internal states (CP3, CP6, CP7-2) reset for new segment.");
     }
 
     void ResetCheckpointInternalStatesForFailedAttempt()
@@ -210,7 +226,7 @@ public class RootCheckpointManager : MonoBehaviour
         checkpoint3_2_hitByCorrectWheel = false;
         ResetCP6StateAndLight();
         ResetCP7_2State();
-        Debug.Log("Internal states (CP3, CP6, CP7-2) reset after failed attempt.");
+        // Debug.Log("Internal states (CP3, CP6, CP7-2) reset after failed attempt.");
     }
 
     private void ResetCP6StateAndLight()
@@ -240,6 +256,12 @@ public class RootCheckpointManager : MonoBehaviour
         if (_currentMainSavedCheckpoint != null)
         {
             _currentMainSavedCheckpoint.ActivateCheckpoint();
+
+            if (_currentMainSavedCheckpoint == checkpoint3_1_Ref)
+                checkpoint3_2_Ref.ActivateCheckpoint();
+            else if (_currentMainSavedCheckpoint == checkpoint3_2_Ref)
+                checkpoint3_1_Ref.ActivateCheckpoint();
+
             Debug.Log($"Reactivated main saved CP: {_currentMainSavedCheckpoint.name}");
             foreach (var cp in _currentConcurrentSavedCheckpoints)
             {
@@ -256,13 +278,26 @@ public class RootCheckpointManager : MonoBehaviour
             if (effectiveFallbackStart != null)
             {
                 Debug.LogWarning("_currentMainSavedCheckpoint was null during ReactivateSavedSegment. Resetting to effective initial checkpoint and defining new segment start.");
-                DefineSegmentStart(effectiveFallbackStart);
+                DefineSegmentStart(effectiveFallbackStart, false);
             }
             else
             {
                 Debug.LogError("CRITICAL: No saved segment or any initial checkpoint to reset to during ReactivateSavedSegment!");
             }
         }
+    }
+
+    public void ForceResetToGlobalStart(CarAgent requestingAgent)
+    {
+        Debug.Log("RootCheckpointManager: ForceResetToGlobalStart called by agent.");
+        Checkpoint startCp = initialCheckpoint ?? checkpoint1_Ref;
+        if (startCp != null)
+        {
+            if (car != null) car.ResetState(startCp.spawnPointIndex);
+            DefineSegmentStart(startCp, false); // No reward for "previous" on global reset
+            if (levelCrossingLightForCP8 != null) levelCrossingLightForCP8.SetLightActive(false);
+        }
+        else Debug.LogError("Cannot ForceResetToGlobalStart: No initialCheckpoint or checkpoint1_Ref defined.");
     }
 
     public Checkpoint GetCheckpointByName(string name)
@@ -276,8 +311,10 @@ public class RootCheckpointManager : MonoBehaviour
         if (checkpoint3_1_hitByCorrectWheel && checkpoint3_2_hitByCorrectWheel)
         {
             Debug.Log("CP3 completed!");
+
             if (checkpoint3_1_Ref) checkpoint3_1_Ref.DeactivateCheckpoint();
             if (checkpoint3_2_Ref) checkpoint3_2_Ref.DeactivateCheckpoint();
+
             if (checkpoint4_1_Ref != null) AdvanceToSegment(checkpoint4_1_Ref);
             else Debug.LogError("RootCheckpointManager: CP4-1 Ref not set for CP3 completion!");
         }
@@ -343,6 +380,7 @@ public class RootCheckpointManager : MonoBehaviour
     public void ResetCheckpoint6Sequence()
     {
         Debug.Log("RootCheckpointManager: Resetting CP6 internal sequence. Looping back to CP6-1.");
+        HandleCrash();
         ResetCP6StateAndLight();
         if (checkpoint6_0_Ref != null && checkpoint6_0_Ref.isActive) checkpoint6_0_Ref.DeactivateCheckpoint();
         if (checkpoint6_2_Ref != null && checkpoint6_2_Ref.isActive) checkpoint6_2_Ref.DeactivateCheckpoint();
@@ -353,10 +391,12 @@ public class RootCheckpointManager : MonoBehaviour
     public void CompleteCheckpoint6AndAdvance()
     {
         Debug.Log("RootCheckpointManager: CP6 PASSED. Advancing to CP7-1.");
+
         ResetCP6StateAndLight();
         if (checkpoint6_0_Ref != null && checkpoint6_0_Ref.isActive) checkpoint6_0_Ref.DeactivateCheckpoint();
         if (checkpoint6_1_Ref != null && checkpoint6_1_Ref.isActive) checkpoint6_1_Ref.DeactivateCheckpoint();
         if (checkpoint6_2_Ref != null && checkpoint6_2_Ref.isActive) checkpoint6_2_Ref.DeactivateCheckpoint();
+
         if (checkpoint7_1_Ref != null) AdvanceToSegment(checkpoint7_1_Ref);
         else Debug.LogError("RootCheckpointManager: Cannot advance from CP6: checkpoint7_1_Ref is null!");
     }
@@ -420,24 +460,13 @@ public class RootCheckpointManager : MonoBehaviour
     {
         Debug.Log("RootCheckpointManager: Looping back to Checkpoint 8-1 due to early touch on CP8-2.");
 
-        // It's important to treat this as starting a new segment defined by Checkpoint 8-1.
-        // This will handle deactivating CP8-2 (and any others), activating CP8-1,
-        // and setting CP8-1 as the current checkpoint to reset to if a crash happens next.
-        // It also calls ResetCheckpointInternalStatesForNewSegment().
         if (checkpoint8_1_Ref != null)
         {
             AdvanceToSegment(checkpoint8_1_Ref);
-            // When Checkpoint8_1 is activated, it will wait for a front wheel hit.
-            // Upon that hit, its own logic (in Checkpoint8_1.cs) will ensure the
-            // level crossing light is activated (or re-confirmed) and then activate Checkpoint8_2 again.
-            // The level crossing light should ideally remain ON from its first activation by 8-1,
-            // and 8-1's logic would just re-confirm it if needed.
         }
         else
         {
             Debug.LogError("RootCheckpointManager: Cannot loop back to CP8-1 because 'checkpoint8_1_Ref' is null! Assign it in the Inspector.");
-            // As a fallback, you might consider a full crash reset if 8-1 can't be activated.
-            // HandleCrash(); 
         }
     }
 }
