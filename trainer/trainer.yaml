@@ -1,0 +1,67 @@
+behaviors:
+  My Behavior: # Ensure this matches the Behavior Name in your Unity Agent's Behavior Parameters
+    trainer_type: sac
+    hyperparameters:
+      learning_rate: 3.0e-4       # Adam learning rate for policy and Q-functions
+      batch_size: 256             # Minibatch size for training. (Good as is)
+      buffer_size: 2000000        # Increased buffer size for longer-term learning, especially with visual data.
+      buffer_init_steps: 50000    # Increased random steps for more diverse initial data.
+      tau: 0.005                  # Interpolation factor for target network updates (soft updates)
+      steps_per_update: 1.0       # (Good as is)
+      save_replay_buffer: false   # (Good as is)
+      init_entcoef: 0.5           # Initial entropy coefficient (alpha). (Good as is)
+      reward_signal_steps_per_update: 1.0 # (Good as is)
+
+    network_settings:
+      normalize: true             # Whether to normalize vector observations. (Good as is)
+      hidden_units: 512           # Reverted to 512 for potentially higher complexity of visual tasks.
+      num_layers: 4               # Reverted to 4 for potentially higher complexity of visual tasks.
+      vis_encode_type: resnet     # **CRITICAL CHANGE**: Using ResNet for 5 cameras is highly recommended.
+                                  # ResNet is a more powerful and robust visual encoder for complex visual data.
+                                  # Expect longer training times per step, but better feature extraction.
+      vis_encoder_resnet_config:  # Specific ResNet configuration
+        num_blocks: 2             # Number of ResNet blocks. 2 is a good starting point.
+        concatenated_output: false # Whether to concatenate the ResNet outputs or average them. False for individual camera processing.
+        # If your observations from 5 cameras are distinct views of the same object/scene and need to be combined early,
+        # you might consider `concatenated_output: true` and potentially `pooling: true`.
+        # However, for general multi-camera setups, processing them somewhat independently then concatenating
+        # after feature extraction is often better for diverse information.
+        # This parameter typically refers to the output of ResNet feature extraction before passing to the MLP.
+        # For multi-camera input, ML-Agents usually processes each camera through its own encoder and then concatenates the results.
+        # This setting might be more relevant if you had a single visual input with multiple features.
+        # For simplicity, we'll assume the default multi-camera handling by ML-Agents.
+
+    reward_signals:
+      extrinsic:
+        strength: 1.0
+        gamma: 0.99
+      rnd: # Random Network Distillation for intrinsic curiosity
+        strength: 0.02              # **ADJUSTMENT**: Further tuned down RND strength. Very sensitive.
+                                    # Start lower and increase if exploration is insufficient.
+        gamma: 0.99                 # Discount factor for the intrinsic reward
+                                    # **NEW WAY TO CONFIGURE RND NETWORK SIZE**:
+        network_settings:
+          hidden_units: 128         # Output size of the RND target and predictor networks. Matches previous 'encoding_size'.
+          num_layers: 2             # Typically fewer layers for RND than the main policy.
+        learning_rate: 1.0e-4       # **ADJUSTMENT**: Lowered RND learning rate slightly for stability.
+
+    max_steps: 100000000          # **CRITICAL CHANGE**: Increased total steps significantly.
+                                  # For complex visual tasks, millions, and often hundreds of millions, are needed.
+    time_horizon: 128             # **ADJUSTMENT**: Reduced time_horizon. Shorter horizons can provide more frequent
+                                  # updates and be more stable, especially with SAC.
+                                  # For very sparse reward environments, larger horizons might be beneficial.
+    summary_freq: 50000           # Increased summary frequency to reduce TensorBoard log size,
+                                  # while still providing enough data points.
+    keep_checkpoints: 10          # Keep more checkpoints for better recovery or testing different models.
+    checkpoint_interval: 1000000  # Increased checkpoint interval given the higher max_steps.
+    threaded: true                # (Good as is)
+
+engine_settings:
+  width: 84                     # (Good as is)
+  height: 84                    # (Good as is)
+  quality_level: 1              # (Good as is)
+  time_scale: 20                # (Good as is)
+  target_frame_rate: -1         # (Good as is)
+  capture_frame_rate: 60        # (Good as is)
+  no_graphics: true             # **CRITICAL**: Ensures environment runs headless. (Good as is)
+
