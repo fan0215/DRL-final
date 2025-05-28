@@ -23,9 +23,9 @@ public class Checkpoint8_2 : Checkpoint
                 Checkpoint checkpoint1ToActivate = nextCheckpoint_A;
                 if (checkpoint1ToActivate == null)
                 {
-                    checkpoint1ToActivate = rootManager.checkpoint1_Ref; // Fallback to manager's reference
+                    checkpoint1ToActivate = rootManager.checkpoint1_1_Ref; // Fallback to manager's reference
                     if (checkpoint1ToActivate != null)
-                        Debug.LogWarning($"{name}: 'Next Checkpoint A' was not set. Using RootManager's 'checkpoint1_Ref' as fallback to activate Checkpoint 1.");
+                        Debug.LogWarning($"{name}: 'Next Checkpoint A' was not set. Using RootManager's 'checkpoint1_1_Ref' as fallback to activate Checkpoint 1.");
                 }
 
                 if (checkpoint1ToActivate != null)
@@ -34,7 +34,7 @@ public class Checkpoint8_2 : Checkpoint
                 }
                 else
                 {
-                    Debug.LogError($"{name}: Cannot activate Checkpoint 1. Neither 'Next Checkpoint A' nor 'rootManager.checkpoint1_Ref' is set!");
+                    Debug.LogError($"{name}: Cannot activate Checkpoint 1. Neither 'Next Checkpoint A' nor 'rootManager.checkpoint1_1_Ref' is set!");
                 }
             }
         }

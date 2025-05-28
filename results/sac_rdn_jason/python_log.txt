@@ -1,0 +1,13 @@
+Python: Using device: cuda
+Python: Behavior spec: BehaviorSpec(observation_specs=[ObservationSpec(shape=(1, 84, 84), dimension_property=(<DimensionProperty.NONE: 1>, <DimensionProperty.TRANSLATIONAL_EQUIVARIANCE: 2>, <DimensionProperty.TRANSLATIONAL_EQUIVARIANCE: 2>), observation_type=<ObservationType.DEFAULT: 0>, name='cameraFront'), ObservationSpec(shape=(1, 84, 84), dimension_property=(<DimensionProperty.NONE: 1>, <DimensionProperty.TRANSLATIONAL_EQUIVARIANCE: 2>, <DimensionProperty.TRANSLATIONAL_EQUIVARIANCE: 2>), observation_type=<ObservationType.DEFAULT: 0>, name='cameraLeft'), ObservationSpec(shape=(1, 84, 84), dimension_property=(<DimensionProperty.NONE: 1>, <DimensionProperty.TRANSLATIONAL_EQUIVARIANCE: 2>, <DimensionProperty.TRANSLATIONAL_EQUIVARIANCE: 2>), observation_type=<ObservationType.DEFAULT: 0>, name='cameraLeftMirror'), ObservationSpec(shape=(1, 84, 84), dimension_property=(<DimensionProperty.NONE: 1>, <DimensionProperty.TRANSLATIONAL_EQUIVARIANCE: 2>, <DimensionProperty.TRANSLATIONAL_EQUIVARIANCE: 2>), observation_type=<ObservationType.DEFAULT: 0>, name='cameraRight'), ObservationSpec(shape=(1, 84, 84), dimension_property=(<DimensionProperty.NONE: 1>, <DimensionProperty.TRANSLATIONAL_EQUIVARIANCE: 2>, <DimensionProperty.TRANSLATIONAL_EQUIVARIANCE: 2>), observation_type=<ObservationType.DEFAULT: 0>, name='cameraRightMirror'), ObservationSpec(shape=(6,), dimension_property=(<DimensionProperty.NONE: 1>,), observation_type=<ObservationType.DEFAULT: 0>, name='VectorSensor_size6')], action_spec=ActionSpec(continuous_size=3, discrete_branches=()))
+Python: Detected visual obs shape from env: (1, 84, 84)
+Python: Detected visual obs shape from env: (1, 84, 84)
+Python: Detected visual obs shape from env: (1, 84, 84)
+Python: Detected visual obs shape from env: (1, 84, 84)
+Python: Detected visual obs shape from env: (1, 84, 84)
+Initialization complete. Starting training loop...
+Python: Episode: 1, Total Steps: 3001, Episode Steps: 3001, Reward: -7.50, Alpha: 0.500, Speed: 200.01 steps/s
+Python: Episode: 2, Total Steps: 6002, Episode Steps: 3001, Reward: -7.50, Alpha: 0.500, Speed: 199.69 steps/s
+Python: Episode: 3, Total Steps: 9003, Episode Steps: 3001, Reward: -7.50, Alpha: 0.500, Speed: 199.91 steps/s
+Python: Episode: 4, Total Steps: 12004, Episode Steps: 3001, Reward: -7.50, Alpha: 0.500, Speed: 199.49 steps/s
+Python: Episode: 5, Total Steps: 15005, Episode Steps: 3001, Reward: -7.50, Alpha: 0.500, Speed: 198.55 steps/s

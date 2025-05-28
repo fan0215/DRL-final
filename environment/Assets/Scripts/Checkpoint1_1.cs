@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Checkpoint1 : Checkpoint
+public class Checkpoint1_1 : Checkpoint
 {
     protected override void HandleCollisionLogic(string wheelType, CarController car)
     {
@@ -14,7 +14,7 @@ public class Checkpoint1 : Checkpoint
             }
             else
             {
-                Debug.LogError($"{name}: nextCheckpoint_A (for Checkpoint 2-1) is not assigned!");
+                Debug.LogError($"{name}: nextCheckpoint_A (for Checkpoint 1-2) is not assigned!");
             }
         }
     }
