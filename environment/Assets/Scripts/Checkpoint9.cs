@@ -15,14 +15,14 @@ public class Checkpoint9 : Checkpoint
             {
                 rootManager.AdvanceToSegment(nextCheckpoint_A);
             }
-            else if (rootManager.checkpoint1_Ref != null) // Fallback if nextCheckpoint_A wasn't set
+            else if (rootManager.checkpoint1_1_Ref != null) // Fallback if nextCheckpoint_A wasn't set
             {
-                Debug.LogWarning($"{name}: nextCheckpoint_A not set, using rootManager.checkpoint1_Ref as fallback.");
-                rootManager.AdvanceToSegment(rootManager.checkpoint1_Ref);
+                Debug.LogWarning($"{name}: nextCheckpoint_A not set, using rootManager.checkpoint1_1_Ref as fallback.");
+                rootManager.AdvanceToSegment(rootManager.checkpoint1_1_Ref);
             }
             else
             {
-                Debug.LogError($"{name}: Cannot activate Checkpoint 1. Neither nextCheckpoint_A nor rootManager.checkpoint1_Ref is set!");
+                Debug.LogError($"{name}: Cannot activate Checkpoint 1. Neither nextCheckpoint_A nor rootManager.checkpoint1_1_Ref is set!");
             }
         }
     }

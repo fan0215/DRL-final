@@ -4668,6 +4668,156 @@ Mesh:
     offset: 0
     size: 0
     path: 
+--- !u!1 &598326492
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 598326498}
+  - component: {fileID: 598326497}
+  - component: {fileID: 598326494}
+  - component: {fileID: 598326496}
+  - component: {fileID: 598326495}
+  - component: {fileID: 598326493}
+  m_Layer: 0
+  m_Name: StartCheck2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 2147483647
+  m_IsActive: 1
+--- !u!114 &598326493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598326492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acfaf711a922476c5bb29f60f59a7a67, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isActive: 0
+  rootManager: {fileID: 0}
+  nextCheckpoint_A: {fileID: 42924752}
+  nextCheckpoint_B: {fileID: 0}
+  spawnPointIndex: 0
+  checkpointRenderer: {fileID: 598326494}
+  activeMaterial: {fileID: 2100000, guid: b157ccc81d1cf3538b7dcecf5efb2080, type: 2}
+  inactiveMaterial: {fileID: 2100000, guid: 64017d048badd492c922da845a69cbb3, type: 2}
+--- !u!23 &598326494
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598326492}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RayTracingAccelStructBuildFlagsOverride: 0
+  m_RayTracingAccelStructBuildFlags: 1
+  m_SmallMeshCulling: 1
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: b157ccc81d1cf3538b7dcecf5efb2080, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &598326495
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598326492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d11b5f20ab73f18c9af8e1100d1369b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isActive: 1
+  rootManager: {fileID: 0}
+  nextCheckpoint_A: {fileID: 42924752}
+  nextCheckpoint_B: {fileID: 0}
+  spawnPointIndex: 0
+  checkpointRenderer: {fileID: 598326494}
+  activeMaterial: {fileID: 2100000, guid: b157ccc81d1cf3538b7dcecf5efb2080, type: 2}
+  inactiveMaterial: {fileID: 2100000, guid: 64017d048badd492c922da845a69cbb3, type: 2}
+--- !u!65 &598326496
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598326492}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!33 &598326497
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598326492}
+  m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!4 &598326498
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 598326492}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -4.07, y: -5, z: 21.22}
+  m_LocalScale: {x: 0.2, y: 1, z: 10}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1718793129}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &615441484
 GameObject:
   m_ObjectHideFlags: 0
@@ -9556,7 +9706,7 @@ GameObject:
   - component: {fileID: 818850905}
   - component: {fileID: 818850909}
   m_Layer: 0
-  m_Name: StartCheck
+  m_Name: StartCheck1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9645,11 +9795,11 @@ Transform:
   m_GameObject: {fileID: 818850904}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.7812195, y: -0.5, z: 9.6}
+  m_LocalPosition: {x: -14.5390415, y: -5, z: 11.132151}
   m_LocalScale: {x: 7, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2043192187}
+  m_Father: {fileID: 1718793129}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &818850909
 MonoBehaviour:
@@ -9660,12 +9810,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 818850904}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d11b5f20ab73f18c9af8e1100d1369b6, type: 3}
+  m_Script: {fileID: 11500000, guid: ab852802c23354efdb4b8e589946a032, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isActive: 1
+  isActive: 0
   rootManager: {fileID: 0}
-  nextCheckpoint_A: {fileID: 42924752}
+  nextCheckpoint_A: {fileID: 598326493}
   nextCheckpoint_B: {fileID: 0}
   spawnPointIndex: 0
   checkpointRenderer: {fileID: 818850906}
@@ -11827,7 +11977,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isActive: 0
   rootManager: {fileID: 0}
-  nextCheckpoint_A: {fileID: 818850909}
+  nextCheckpoint_A: {fileID: 0}
   nextCheckpoint_B: {fileID: 0}
   spawnPointIndex: 11
   checkpointRenderer: {fileID: 925453989}
@@ -21054,10 +21204,10 @@ MonoBehaviour:
   MaxStep: 0
   carController: {fileID: 1511127909}
   rootCheckpointManager: {fileID: 2043192188}
-  crashPenalty: -1
-  stageClearedReward: 10
+  crashPenalty: -5
+  stageClearedReward: 5
   timePenaltyPerStep: -0.0005
-  episodic_train: 0
+  episodic_train: 1
 --- !u!114 &1511127912
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21662,6 +21812,39 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1705878811}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1718793128
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1718793129}
+  m_Layer: 0
+  m_Name: StartChecks
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1718793129
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1718793128}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 16.320261, y: 4.5, z: -1.5321503}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 818850908}
+  - {fileID: 598326498}
+  m_Father: {fileID: 2043192187}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1768547817
 GameObject:
   m_ObjectHideFlags: 0
@@ -26270,11 +26453,11 @@ Transform:
   - {fileID: 935193576}
   - {fileID: 526954773}
   - {fileID: 1024780811}
-  - {fileID: 818850908}
   - {fileID: 1365173271}
   - {fileID: 1054956180}
   - {fileID: 774751481}
   - {fileID: 925453992}
+  - {fileID: 1718793129}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2043192188
@@ -26290,9 +26473,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   car: {fileID: 1511127909}
-  carAgent: {fileID: 0}
+  carAgent: {fileID: 1511127911}
   allCheckpoints:
   - {fileID: 818850909}
+  - {fileID: 598326493}
   - {fileID: 42924752}
   - {fileID: 1351839118}
   - {fileID: 1561651004}
@@ -26308,7 +26492,8 @@ MonoBehaviour:
   - {fileID: 472855807}
   - {fileID: 2001975972}
   initialCheckpoint: {fileID: 818850909}
-  checkpoint1_Ref: {fileID: 818850909}
+  checkpoint1_1_Ref: {fileID: 818850909}
+  checkpoint1_2_Ref: {fileID: 598326493}
   checkpoint2_1_Ref: {fileID: 42924752}
   checkpoint2_2_Ref: {fileID: 1351839118}
   checkpoint3_1_Ref: {fileID: 1561651004}

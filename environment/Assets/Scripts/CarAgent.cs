@@ -40,7 +40,7 @@ public class CarAgent : Agent
         else if (carController != null) // Fallback basic reset if manager is missing
         {
             // Attempt a very basic reset if RootCheckpointManager isn't available
-            Checkpoint firstCp = FindObjectOfType<RootCheckpointManager>()?.initialCheckpoint ?? FindObjectOfType<RootCheckpointManager>()?.checkpoint1_Ref;
+            Checkpoint firstCp = FindObjectOfType<RootCheckpointManager>()?.initialCheckpoint ?? FindObjectOfType<RootCheckpointManager>()?.checkpoint1_1_Ref;
             if (firstCp != null)
             {
                 carController.ResetState(firstCp.spawnPointIndex);
