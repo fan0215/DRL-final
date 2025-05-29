@@ -59,10 +59,10 @@ NUM_LAYERS_MLP = 3
 GRAD_CLIP_NORM = 5.0
 
 # Training Loop
-END_TRAINING_STEPS = int(1e6)
+END_TRAINING_STEPS = int(1e7)
 START_TRAINING_STEPS = 0
 STEPS_PER_UPDATE = 5
-SUMMARY_FREQ = 10000
+SUMMARY_FREQ = 5000
 CHECKPOINT_FREQ = 50000
 OUTPUT_DIR = f"results/{RUN_ID}"
 
@@ -341,13 +341,13 @@ def main():
     if vis_obs_count_actual != NUM_CAMERA_OBS:
         raise ValueError(f"Num visual_obs mismatch: Env has {vis_obs_count_actual}, script configured for {NUM_CAMERA_OBS}")
     
-    visualencoder = VisualEncoder(CAMERA_HEIGHT, CAMERA_WIDTH, CAMERA_CHANNELS, VISUAL_FEATURE_SIZE)
-    actor = Actor(visualencoder, NUM_CAMERA_OBS, VISUAL_FEATURE_SIZE, VECTOR_OBS_SIZE, CONTINUOUS_ACTION_SIZE, HIDDEN_UNITS).to(device)
-    critic1 = Critic(visualencoder, NUM_CAMERA_OBS, VISUAL_FEATURE_SIZE, VECTOR_OBS_SIZE, CONTINUOUS_ACTION_SIZE, HIDDEN_UNITS).to(device)
-    critic2 = Critic(visualencoder, NUM_CAMERA_OBS, VISUAL_FEATURE_SIZE, VECTOR_OBS_SIZE, CONTINUOUS_ACTION_SIZE, HIDDEN_UNITS).to(device)
+    visualencoders = nn.ModuleList([VisualEncoder(CAMERA_HEIGHT, CAMERA_WIDTH, CAMERA_CHANNELS, VISUAL_FEATURE_SIZE) for _ in range(NUM_CAMERA_OBS)])
+    actor = Actor(visualencoders, NUM_CAMERA_OBS, VISUAL_FEATURE_SIZE, VECTOR_OBS_SIZE, CONTINUOUS_ACTION_SIZE, HIDDEN_UNITS).to(device)
+    critic1 = Critic(visualencoders, NUM_CAMERA_OBS, VISUAL_FEATURE_SIZE, VECTOR_OBS_SIZE, CONTINUOUS_ACTION_SIZE, HIDDEN_UNITS).to(device)
+    critic2 = Critic(visualencoders, NUM_CAMERA_OBS, VISUAL_FEATURE_SIZE, VECTOR_OBS_SIZE, CONTINUOUS_ACTION_SIZE, HIDDEN_UNITS).to(device)
 
-    critic1_target = Critic(visualencoder, NUM_CAMERA_OBS,VISUAL_FEATURE_SIZE, VECTOR_OBS_SIZE, CONTINUOUS_ACTION_SIZE, HIDDEN_UNITS).to(device)
-    critic2_target = Critic(visualencoder, NUM_CAMERA_OBS,VISUAL_FEATURE_SIZE, VECTOR_OBS_SIZE, CONTINUOUS_ACTION_SIZE, HIDDEN_UNITS).to(device)
+    critic1_target = Critic(visualencoders, NUM_CAMERA_OBS,VISUAL_FEATURE_SIZE, VECTOR_OBS_SIZE, CONTINUOUS_ACTION_SIZE, HIDDEN_UNITS).to(device)
+    critic2_target = Critic(visualencoders, NUM_CAMERA_OBS,VISUAL_FEATURE_SIZE, VECTOR_OBS_SIZE, CONTINUOUS_ACTION_SIZE, HIDDEN_UNITS).to(device)
     critic1_target.load_state_dict(critic1.state_dict())
     critic2_target.load_state_dict(critic2.state_dict())
     for p in critic1_target.parameters():
@@ -355,7 +355,7 @@ def main():
     for p in critic2_target.parameters():
         p.requires_grad = False
     
-    rnd_model = RNDModel(visualencoder, NUM_CAMERA_OBS, VISUAL_FEATURE_SIZE, VECTOR_OBS_SIZE, RND_ENCODING_SIZE, HIDDEN_UNITS).to(device)
+    rnd_model = RNDModel(visualencoders, NUM_CAMERA_OBS, VISUAL_FEATURE_SIZE, VECTOR_OBS_SIZE, RND_ENCODING_SIZE, HIDDEN_UNITS).to(device)
 
     actor_optimizer = optim.Adam(actor.parameters(), lr=SAC_LEARNING_RATE)
     critic1_optimizer = optim.Adam(critic1.parameters(), lr=SAC_LEARNING_RATE)
@@ -444,7 +444,7 @@ def main():
         if agent_id in terminal_steps:
             done = True
             term_info = terminal_steps[agent_id]
-            reward = term_info.reward
+            reward = term_info.reward - 5
             next_visual_obs_list, next_vector_obs = preprocess_observation(term_info.obs, spec.observation_specs, device)
         elif agent_id in decision_stpes:
             step_info = decision_stpes[agent_id]
@@ -494,11 +494,13 @@ def main():
         current_visual_obs_list = next_visual_obs_list
         current_vector_obs = next_vector_obs
 
-        if episode_steps > 3000:
-            done = True
-
         if NORMALIZE_OBS and not done:
             vector_obs_rms.update(current_vector_obs)
+        
+        if total_steps % SUMMARY_FREQ == 0:
+            avg_steps_per_sec = step / (time.time() - start_time + 1e-6)
+            with open(OUTPUT_DIR+"/python_log.txt", "a") as f:
+                f.write(f"Python: Episode: {episode_count}, Total Steps: {total_steps}, Episode Steps: {episode_steps}, Reward: {episode_reward_sum:.2f}, Alpha: {log_alpha.exp().item():.3f}, Speed: {avg_steps_per_sec:.2f} steps/s\n")
         
         if total_steps >= SAC_BUFFER_INIT_STEPS and len(replay_buffer) > SAC_BATCH_SIZE:
             if total_steps % STEPS_PER_UPDATE == 0:
@@ -592,19 +594,8 @@ def main():
             episode_reward_sum = 0
             episode_steps = 0
 
-            decision_steps, terminal_steps = env.get_steps(behavior_name)
-            if agent_id in decision_steps: # Agent is ready for new episode
-                current_obs_info = decision_steps[agent_id]
-                current_visual_obs_list, current_vector_obs = preprocess_observation(current_obs_info.obs, spec.observation_specs, device)
-                if NORMALIZE_OBS: vector_obs_rms.update(current_vector_obs)
-            elif agent_id in terminal_steps: # Should not happen if env auto-resets into a decision step
-                with open(OUTPUT_DIR+"/python_log.txt", "a") as f:
-                    f.write("Error: Agent still in terminal step after supposed reset. Exiting.\n")
-                break 
-            else: # Agent not found, this might indicate an issue or end of all episodes if env closes.
-                with open(OUTPUT_DIR+"/python_log.txt", "a") as f:
-                    f.write("Error: Agent not found after episode end. Exiting.\n")
-                break
+            for i in range(10):
+                env.step()
         
         if total_steps % CHECKPOINT_FREQ == 0:
             with open(OUTPUT_DIR+"/python_log.txt", "a") as f:

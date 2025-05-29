@@ -13,7 +13,7 @@ public class Checkpoint4_2 : Checkpoint
             }
             else
             {
-                Debug.LogError($"{name}: nextCheckpoint_A (for Checkpoint 5-1) is not assigned!");
+                Debug.LogError($"{name}: nextCheckpoint_A (for Checkpoint 4-3) is not assigned!");
             }
         }
         else if (wheelType == "BackWheel")
