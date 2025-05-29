@@ -13,7 +13,7 @@ public class CarAgent : Agent
     [Tooltip("Penalty applied when the car crashes.")]
     public float crashPenalty = -1.0f;
     [Tooltip("Reward given when a checkpoint stage is successfully cleared.")]
-    public float stageClearedReward = 10f;
+    public float stageClearedReward = 100f;
     // No extra reward for completing all stages in continuous training.
     [Tooltip("Small negative reward per step to encourage faster completion.")]
     public float timePenaltyPerStep = -0.0005f; // Tunable
@@ -23,16 +23,17 @@ public class CarAgent : Agent
     [Header("Continuous Reward Signal")]
     public float continuousRewardScale = 0.01f;
     private Vector3 lastStepPosition;
+    private float totalreward = 0.0f;
 
     public override void Initialize()
     {
-        lastStepPosition = transform.position;
-
         if (carController == null) carController = GetComponent<CarController>();
         if (rootCheckpointManager == null) rootCheckpointManager = FindObjectOfType<RootCheckpointManager>();
 
         if (carController == null) Debug.LogError("CarAgent: CarController component not found on this GameObject or not assigned!", this);
         if (rootCheckpointManager == null) Debug.LogError("CarAgent: RootCheckpointManager instance not found in the scene or not assigned!", this);
+
+        lastStepPosition = transform.position;
     }
 
     public override void OnEpisodeBegin()
@@ -50,10 +51,14 @@ public class CarAgent : Agent
             if (firstCp != null)
             {
                 carController.ResetState(firstCp.spawnPointIndex);
-            } else {
+            }
+            else
+            {
                 Debug.LogWarning("CarAgent: Could not perform full reset in OnEpisodeBegin as RootCheckpointManager or its initial checkpoint is missing.");
             }
         }
+
+        lastStepPosition = transform.position;
     }
 
     public override void CollectObservations(VectorSensor sensor)
@@ -86,6 +91,8 @@ public class CarAgent : Agent
         lastStepPosition = currentPosition;
         float reward = (l2dist_past - l2dist_now) * continuousRewardScale;
         // Debug.Log($"Last: {lastStepPosition}, Current: {currentPosition}, Obj: {rootCheckpointManager.currentObjposition}, L2 Past: {l2dist_past}, L2 Now: {l2dist_now}, Reward: {reward}");
+        // Debug.Log($"total reward: {totalreward}");
+        totalreward += reward;
         return reward;
     }
 
@@ -141,10 +148,12 @@ public class CarAgent : Agent
     public void AgentCrashed()
     {
         AddReward(crashPenalty);
+        totalreward += crashPenalty;
         Debug.Log($"Agent: CRASHED! Penalty: {crashPenalty}. Ending Episode.");
         if (episodic_train) // reset to global start upon crash
         {
             EndEpisode(); // End the episode on a crash
+            totalreward = 0;
         }
         // else do not reset to global start, only to local checkpoint upon crash
     }
@@ -153,6 +162,8 @@ public class CarAgent : Agent
     public void AgentClearedStage()
     {
         AddReward(stageClearedReward);
-        Debug.Log($"Agent: Stage Cleared. Reward: {stageClearedReward}");
+        totalreward += stageClearedReward;
+        Debug.Log($"Agent: Stage Cleared. Reward: {stageClearedReward} total reward {totalreward}");
+        lastStepPosition = transform.position;
     }
 }

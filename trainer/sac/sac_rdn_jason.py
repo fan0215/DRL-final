@@ -449,7 +449,6 @@ def main():
         elif agent_id in decision_stpes:
             step_info = decision_stpes[agent_id]
             reward = step_info.reward
-            reward = reward if reward <= 0.0 else 100.0
             next_visual_obs_list, next_vector_obs = preprocess_observation(step_info.obs, spec.observation_specs, device)
         else:
             with open(OUTPUT_DIR+"/python_log.txt", "a") as f:
