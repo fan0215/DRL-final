@@ -23,10 +23,15 @@ public abstract class Checkpoint : MonoBehaviour
     [Tooltip("Material to apply when the checkpoint is inactive/disabled.")]
     public Material inactiveMaterial;
 
+    [Header("GameObject information")]
+    public Vector3 objectPosition;
+
     protected virtual void Awake()
     {
+        objectPosition = transform.position;
+
         // Ensure RootCheckpointManager is found
-        if (rootManager == null) 
+        if (rootManager == null)
         {
             rootManager = FindObjectOfType<RootCheckpointManager>();
         }
@@ -79,7 +84,7 @@ public abstract class Checkpoint : MonoBehaviour
             // Check if the material is already the target material to avoid unnecessary swaps
             if (checkpointRenderer.sharedMaterial != targetMaterial) // Use sharedMaterial for comparison to avoid instancing from comparison
             {
-                 checkpointRenderer.material = targetMaterial; // This might create an instance if not careful, but is standard.
+                checkpointRenderer.material = targetMaterial; // This might create an instance if not careful, but is standard.
             }
         }
     }

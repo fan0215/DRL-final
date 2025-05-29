@@ -1,10 +1,9 @@
 using UnityEngine;
 
-public class Checkpoint1_2 : Checkpoint
+public class Checkpoint4_0 : Checkpoint
 {
     protected override void HandleCollisionLogic(string wheelType, CarController car)
     {
-        Debug.Log($"Collision.");
         if (wheelType == "FrontWheel")
         {
             Debug.Log($"{name} successfully passed by FrontWheel.");
@@ -14,8 +13,13 @@ public class Checkpoint1_2 : Checkpoint
             }
             else
             {
-                Debug.LogError($"{name}: nextCheckpoint_A (for Checkpoint 2-0) is not assigned!");
+                Debug.LogError($"{name}: nextCheckpoint_A (for Checkpoint 4-1) is not assigned!");
             }
+        }
+        else if (wheelType == "BackWheel")
+        {
+            Debug.Log($"{name} hit by BackWheel (Incorrect). Resetting.");
+            rootManager.HandleCrash();
         }
     }
 }

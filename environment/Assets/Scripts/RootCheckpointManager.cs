@@ -13,21 +13,40 @@ public class RootCheckpointManager : MonoBehaviour
     [Header("Specific Checkpoint References (Assign in Inspector)")]
     public Checkpoint checkpoint1_1_Ref;
     public Checkpoint checkpoint1_2_Ref;
+
+    public Checkpoint checkpoint2_0_Ref;
     public Checkpoint checkpoint2_1_Ref;
     public Checkpoint checkpoint2_2_Ref;
+
+    public Checkpoint checkpoint3_0_Ref;
     public Checkpoint checkpoint3_1_Ref;
     public Checkpoint checkpoint3_2_Ref;
+
+    public Checkpoint checkpoint4_0_Ref;
     public Checkpoint checkpoint4_1_Ref;
     public Checkpoint checkpoint4_2_Ref;
+    public Checkpoint checkpoint4_3_Ref;
+    public Checkpoint checkpoint4_4_Ref;
+    public Checkpoint checkpoint4_5_Ref;
+    public Checkpoint checkpoint4_6_Ref;
+    public Checkpoint checkpoint4_7_Ref;
+    public Checkpoint checkpoint4_8_Ref;
+    public Checkpoint checkpoint4_9_Ref;
+    public Checkpoint checkpoint4_10_Ref;
+
     public Checkpoint checkpoint5_1_Ref;
     public Checkpoint checkpoint5_2_Ref;
+
     public Checkpoint checkpoint6_0_Ref;
     public Checkpoint checkpoint6_1_Ref;
     public Checkpoint checkpoint6_2_Ref;
+
     public Checkpoint checkpoint7_1_Ref;
     public Checkpoint checkpoint7_2_Ref;
+
     public Checkpoint checkpoint8_1_Ref;
     public Checkpoint checkpoint8_2_Ref;
+
     public Checkpoint checkpoint9_Ref;
 
     private Checkpoint _currentMainSavedCheckpoint;
@@ -57,10 +76,11 @@ public class RootCheckpointManager : MonoBehaviour
 
     public LevelCrossingLight levelCrossingLightForCP8;
 
+    [Header("Continuous Reward Signal")]
+    public Vector3 currentObjposition;
+
     void Start()
     {
-        Debug.unityLogger.logEnabled = false; // build without log
-
         if (car == null) car = FindObjectOfType<CarController>();
         if (carAgent == null && car != null) carAgent = car.GetComponent<CarAgent>();
 
@@ -149,6 +169,8 @@ public class RootCheckpointManager : MonoBehaviour
             checkpoint3_2_Ref.ActivateCheckpoint();
         else if (mainCheckpoint == checkpoint3_2_Ref)
             checkpoint3_1_Ref.ActivateCheckpoint();
+
+        currentObjposition = mainCheckpoint.objectPosition;
 
         Debug.Log($"Segment defined. Main CP for reset: {mainCheckpoint?.name} (will use its spawnPointIndex: {mainCheckpoint?.spawnPointIndex}).");
     }
@@ -318,8 +340,8 @@ public class RootCheckpointManager : MonoBehaviour
             if (checkpoint3_1_Ref) checkpoint3_1_Ref.DeactivateCheckpoint();
             if (checkpoint3_2_Ref) checkpoint3_2_Ref.DeactivateCheckpoint();
 
-            if (checkpoint4_1_Ref != null) AdvanceToSegment(checkpoint4_1_Ref);
-            else Debug.LogError("RootCheckpointManager: CP4-1 Ref not set for CP3 completion!");
+            if (checkpoint4_1_Ref != null) AdvanceToSegment(checkpoint4_0_Ref);
+            else Debug.LogError("RootCheckpointManager: CP4-0 Ref not set for CP3 completion!");
         }
     }
 

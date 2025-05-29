@@ -20,8 +20,14 @@ public class CarAgent : Agent
     [Tooltip("Episodic trainin or non Episodic")]
     public bool episodic_train = true;
 
+    [Header("Continuous Reward Signal")]
+    public float continuousRewardScale = 0.01f;
+    private Vector3 lastStepPosition;
+
     public override void Initialize()
     {
+        lastStepPosition = transform.position;
+
         if (carController == null) carController = GetComponent<CarController>();
         if (rootCheckpointManager == null) rootCheckpointManager = FindObjectOfType<RootCheckpointManager>();
 
@@ -72,6 +78,17 @@ public class CarAgent : Agent
         // Visual observations (from front, left, right, left mirror, right mirror cameras)
     }
 
+    private float HeuristicRewardUpdate()
+    {
+        Vector3 currentPosition = transform.position;
+        float l2dist_past = Mathf.Pow(lastStepPosition.x - rootCheckpointManager.currentObjposition.x, 2) + Mathf.Pow(lastStepPosition.z - rootCheckpointManager.currentObjposition.z, 2);
+        float l2dist_now = Mathf.Pow(currentPosition.x - rootCheckpointManager.currentObjposition.x, 2) + Mathf.Pow(currentPosition.z - rootCheckpointManager.currentObjposition.z, 2);
+        lastStepPosition = currentPosition;
+        float reward = (l2dist_past - l2dist_now) * continuousRewardScale;
+        // Debug.Log($"Last: {lastStepPosition}, Current: {currentPosition}, Obj: {rootCheckpointManager.currentObjposition}, L2 Past: {l2dist_past}, L2 Now: {l2dist_now}, Reward: {reward}");
+        return reward;
+    }
+
     public override void OnActionReceived(ActionBuffers actions)
     {
         if (carController == null) return;
@@ -88,7 +105,7 @@ public class CarAgent : Agent
         carController.SetAgentInputs(acceleratorInput, brakeInput, steerInput);
 
         // Minor penalty every step to encourage progress and efficiency
-        AddReward(timePenaltyPerStep);
+        AddReward(HeuristicRewardUpdate());
     }
 
     public override void Heuristic(in ActionBuffers actionsOut)
